@@ -3,13 +3,11 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:pay_split/models/Group.dart';
 
-class HomeViewModel {
+class GroupsListViewModel {
 
-  StreamController<HomeViewModel> streamController = StreamController.broadcast();
+  StreamController<GroupsListViewModel> streamController = StreamController.broadcast();
 
   List<Group> groupList = [];
-
-  Group _group = Group.makeObject();
 
   addGroup(String groupName) {
     Group group = new Group(groupName);

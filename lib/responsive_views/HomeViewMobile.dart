@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:pay_split/viewmodels/HomeViewModel.dart';
+import 'package:flutter/widgets.dart';
+import 'package:pay_split/RouteNames.dart';
+import 'package:pay_split/viewmodels/GroupsListViewModel.dart';
 import 'package:provider/provider.dart';
 
 class HomeViewMobile extends StatefulWidget {
@@ -9,43 +11,79 @@ class HomeViewMobile extends StatefulWidget {
 
 class _HomeViewMobileState extends State<HomeViewMobile> {
   String groupNameEntered = "";
+
   @override
   Widget build(BuildContext context) {
-    final homeViewModel = Provider.of<HomeViewModel>(context);
+    final homeViewModel = Provider.of<GroupsListViewModel>(context);
 
     return Scaffold(
-        body: Container(
-          child: StreamProvider.value(
-            value: homeViewModel.streamController.stream,
-            initialData: "No groups created yet",
-            child: ListView.builder(
-              itemCount: homeViewModel.groupList.length,
-              itemBuilder: (BuildContext context, index) {
-                return Container(
-                  height: MediaQuery.of(context).size.height*(10/100),
-                  child: Card(
-                    elevation: 3,
-                    child: Container(
-                      padding: EdgeInsets.all(10),
-                      child: Text(
-                        homeViewModel.groupList[index].groupName,
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              margin: EdgeInsets.all(5),
+              child: TextButton(
+                style: TextButton.styleFrom(
+                  backgroundColor: Colors.black,
+                  shadowColor: Colors.blue[900],
+                  elevation: 15,
+                ),
+                child: Text(
+                  "Groups you created",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20
                   ),
-                );
-              },
+                ),
+                onPressed: () {
+                  Navigator.pushNamed(context, userCreatedGroupsView);
+                },
+              ),
             ),
-          ),
+            Container(
+              margin: EdgeInsets.all(5),
+              child: TextButton(
+                style: TextButton.styleFrom(
+                  backgroundColor: Colors.black,
+                  shadowColor: Colors.red[900],
+                  elevation: 15,
+                ),
+                child: Text(
+                  "Groups you are added",
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20
+                  ),
+                ),
+                onPressed: () {
+
+                },
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.all(5),
+              child: TextButton(
+                style: TextButton.styleFrom(
+                  backgroundColor: Colors.black,
+                  shadowColor: Colors.blue[900],
+                  elevation: 15,
+                ),
+                child: Text(
+                  "Create group",
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20
+                  ),
+                ),
+                onPressed: () {
+                  _showGroupNameForm(context, homeViewModel);
+                },
+              ),
+            ),
+          ],
         ),
-        floatingActionButton: FloatingActionButton(
-          child: Icon(
-              Icons.add
-          ),
-          onPressed: () {
-            _showGroupNameForm(context, homeViewModel);
-          },
-        )
+      ),
     );
   }
 

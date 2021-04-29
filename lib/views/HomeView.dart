@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pay_split/responsive_ui/ScreenTypeLayout.dart';
 import 'package:pay_split/responsive_views/HomeViewMobile.dart';
-import 'package:pay_split/viewmodels/HomeViewModel.dart';
+import 'package:pay_split/viewmodels/GroupsListViewModel.dart';
 import 'package:provider/provider.dart';
 
 class HomeView extends StatefulWidget {
