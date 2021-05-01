@@ -1,6 +1,9 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:pay_split/RouteNames.dart';
+import 'package:pay_split/viewmodels/DrawerModel.dart';
 import 'package:pay_split/viewmodels/GroupsListViewModel.dart';
 import 'package:provider/provider.dart';
 
@@ -11,81 +14,170 @@ class HomeViewMobile extends StatefulWidget {
 
 class _HomeViewMobileState extends State<HomeViewMobile> {
   String groupNameEntered = "";
+  double value = 0;
 
   @override
   Widget build(BuildContext context) {
     final homeViewModel = Provider.of<GroupsListViewModel>(context);
 
-    return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              margin: EdgeInsets.all(5),
-              child: TextButton(
-                style: TextButton.styleFrom(
-                  backgroundColor: Colors.black,
-                  shadowColor: Colors.blue[900],
-                  elevation: 15,
-                ),
-                child: Text(
-                  "Groups you created",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20
+    return SafeArea(
+      child: Scaffold(
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                margin: EdgeInsets.all(5),
+                child: TextButton(
+                  style: TextButton.styleFrom(
+                    backgroundColor: Colors.transparent,
+                    shadowColor: Colors.black,
+                    elevation: 15,
                   ),
+                  child: Text(
+                    "Groups you created",
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 20
+                    ),
+                  ),
+                  onPressed: () {
+                    Navigator.pushNamed(context, userCreatedGroupsView);
+                  },
                 ),
-                onPressed: () {
-                  Navigator.pushNamed(context, userCreatedGroupsView);
-                },
               ),
-            ),
-            Container(
-              margin: EdgeInsets.all(5),
-              child: TextButton(
-                style: TextButton.styleFrom(
-                  backgroundColor: Colors.black,
-                  shadowColor: Colors.red[900],
-                  elevation: 15,
-                ),
-                child: Text(
-                  "Groups you are added",
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20
+              Container(
+                margin: EdgeInsets.all(5),
+                child: TextButton(
+                  style: TextButton.styleFrom(
+                    backgroundColor: Colors.transparent,
+                    shadowColor: Colors.black,
+                    elevation: 15,
                   ),
-                ),
-                onPressed: () {
+                  child: Text(
+                    "Groups you are added",
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 20
+                    ),
+                  ),
+                  onPressed: () {
 
-                },
-              ),
-            ),
-            Container(
-              margin: EdgeInsets.all(5),
-              child: TextButton(
-                style: TextButton.styleFrom(
-                  backgroundColor: Colors.black,
-                  shadowColor: Colors.blue[900],
-                  elevation: 15,
+                  },
                 ),
-                child: Text(
-                  "Create group",
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20
+              ),
+              Container(
+                margin: EdgeInsets.all(5),
+                child: TextButton(
+                  style: TextButton.styleFrom(
+                    backgroundColor: Colors.transparent,
+                    shadowColor: Colors.black,
+                    elevation: 15,
                   ),
+                  child: Text(
+                    "Create group",
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 20
+                    ),
+                  ),
+                  onPressed: () {
+                    _showGroupNameForm(context, homeViewModel);
+                  },
                 ),
-                onPressed: () {
-                  _showGroupNameForm(context, homeViewModel);
-                },
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
   }
+
+  /*
+  Scaffold(
+                  appBar: AppBar(
+                    leading: IconButton(
+                      icon: Icon(
+                        Icons.dehaze,
+                        color: Colors.black,
+                      ),
+                      onPressed: () {
+                        print("P");
+                        setState(() {
+                          value == 0 ? value = 1 : value = 0;
+                        });
+                      },
+                    ),
+                  ),
+                  body: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          margin: EdgeInsets.all(5),
+                          child: TextButton(
+                            style: TextButton.styleFrom(
+                              backgroundColor: Colors.black,
+                              shadowColor: Colors.blue[900],
+                              elevation: 15,
+                            ),
+                            child: Text(
+                              "Groups you created",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 20
+                              ),
+                            ),
+                            onPressed: () {
+                              Navigator.pushNamed(context, userCreatedGroupsView);
+                            },
+                          ),
+                        ),
+                        Container(
+                          margin: EdgeInsets.all(5),
+                          child: TextButton(
+                            style: TextButton.styleFrom(
+                              backgroundColor: Colors.black,
+                              shadowColor: Colors.red[900],
+                              elevation: 15,
+                            ),
+                            child: Text(
+                              "Groups you are added",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 20
+                              ),
+                            ),
+                            onPressed: () {
+
+                            },
+                          ),
+                        ),
+                        Container(
+                          margin: EdgeInsets.all(5),
+                          child: TextButton(
+                            style: TextButton.styleFrom(
+                              backgroundColor: Colors.black,
+                              shadowColor: Colors.blue[900],
+                              elevation: 15,
+                            ),
+                            child: Text(
+                              "Create group",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 20
+                              ),
+                            ),
+                            onPressed: () {
+                              _showGroupNameForm(context, homeViewModel);
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+   */
 
   _showGroupNameForm(BuildContext context, homeViewModel) {
     return showDialog(

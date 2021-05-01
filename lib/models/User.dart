@@ -1,22 +1,16 @@
 class User {
   String name = "";
-  String contact = "";
-  List userList = [
-    {
-     "Toorja",
-      "10"
-    },
-    {
-      "Sadman",
-      "01"
-    },
-    {
-      "Samir",
-      "00"
-    },
-    {
-      "Anika",
-      "11"
-    }
+  String phoneNumber = "";
+  List<User> userList = [
+    User("Sadman", "000"),
+    User("Toorja", "001"),
+    User("Samir", "010"),
+    User("Anika", "011"),
+    User("Jaber", "100"),
+    User("Sagol", "101"),
+    User("Bolod", "110"),
+    User("Gadha", "111"),
   ];
+
+  User(this.name, this.phoneNumber);
 }

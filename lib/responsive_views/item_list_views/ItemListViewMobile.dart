@@ -1,15 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:pay_split/models/Group.dart';
 import 'package:pay_split/models/Item.dart';
 import 'package:pay_split/viewmodels/GroupsListViewModel.dart';
 import 'package:pay_split/viewmodels/ItemsListViewModel.dart';
 import 'package:provider/provider.dart';
 
 class ItemListViewMobile extends StatefulWidget {
+  Group group;
+
+  ItemListViewMobile(this.group);
+
   @override
-  _ItemListViewMobileState createState() => _ItemListViewMobileState();
+  _ItemListViewMobileState createState() => _ItemListViewMobileState(this.group);
 }
 
 class _ItemListViewMobileState extends State<ItemListViewMobile> {
+  Group group;
+
+  _ItemListViewMobileState(this.group);
+
   @override
   Widget build(BuildContext context) {
     final itemListViewModel = Provider.of<ItemsListViewModel>(context);
@@ -17,66 +26,105 @@ class _ItemListViewMobileState extends State<ItemListViewMobile> {
     return SafeArea(
       child: Scaffold(
         body: Container(
-          child: StreamProvider.value(
-            value: itemListViewModel.streamController.stream,
-            initialData: "No items created yet",
-            child: ListView.builder(
-              itemCount: itemListViewModel.itemList.length,
-              itemBuilder: (BuildContext context, index) {
-                return Container(
-                  height: MediaQuery.of(context).size.height*(15/100),
-                  child: Card(
-                    elevation: 5,
-                    child: Column(
-                      children: [
-                        Container(
-                          margin: EdgeInsets.all(5),
-                          child: Text(
-                            itemListViewModel.itemList[index].itemName,
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold
-                            ),
+          height: double.maxFinite,
+          child: Column(
+            children: [
+              Card(
+                  elevation: 5,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        child: Text(
+                          group.groupName,
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20
                           ),
                         ),
-                        Container(
-                          margin: EdgeInsets.all(5),
-                          child: Text(
-                            "Price: ${itemListViewModel.itemList[index].itemPrice}",
-                            style: TextStyle(
-                                fontSize: 15
-                            ),
+                        padding: EdgeInsets.all(10),
+                      ),
+                      PopupMenuButton(
+                        itemBuilder: (_) => [
+                          PopupMenuItem(
+                              child: Text(
+                                  "Add member"
+                              ),
+                              value: "/newchat"
                           ),
-                        ),
-                        Container(
-                          margin: EdgeInsets.all(5),
-                          child: Text(
-                            itemListViewModel.itemList[index].itemBoughtAt.toString(),
-                            style: TextStyle(
-                                fontSize: 12,
-                                fontStyle: FontStyle.italic,
-                                color: Colors.black54
-                            ),
+                          PopupMenuItem(
+                              child: Text(
+                                  "Add item"
+                              ),
+                              value: "/new-group-chat"
                           ),
-                        )
-                      ],
-                    )
+                        ],
+                        onSelected: (route) {
+                          // Note You must create respective pages for navigation
+                          //Navigator.pushNamed(context, route);
+                        },
+                      )
+                    ],
+                  )
+              ),
+              Container(
+                child: StreamProvider.value(
+                  value: itemListViewModel.streamController.stream,
+                  initialData: "No items created yet",
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: itemListViewModel.itemList.length,
+                    itemBuilder: (BuildContext context, index) {
+                      if(itemListViewModel.itemList[index].itemGroup == group) {
+                        return Container(
+                          height: MediaQuery.of(context).size.height*(15/100),
+                          child: Card(
+                              elevation: 5,
+                              child: Column(
+                                children: [
+                                  Container(
+                                    margin: EdgeInsets.all(5),
+                                    child: Text(
+                                      itemListViewModel.itemList[index].itemName,
+                                      style: TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold
+                                      ),
+                                    ),
+                                  ),
+                                  Container(
+                                    margin: EdgeInsets.all(5),
+                                    child: Text(
+                                      "Price: ${itemListViewModel.itemList[index].itemPrice}",
+                                      style: TextStyle(
+                                          fontSize: 15
+                                      ),
+                                    ),
+                                  ),
+                                  Container(
+                                    margin: EdgeInsets.all(5),
+                                    child: Text(
+                                      itemListViewModel.itemList[index].itemBoughtAt.toString(),
+                                      style: TextStyle(
+                                          fontSize: 12,
+                                          fontStyle: FontStyle.italic,
+                                          color: Colors.black54
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              )
+                          ),
+                        );
+                      }
+                      return Container();
+                    },
                   ),
-                );
-              },
-            ),
+                ),
+              ),
+            ],
           ),
-        ),
-        floatingActionButton: IconButton(
-          color: Colors.black,
-          icon: Icon(
-            Icons.add,
-            color: Colors.black,
-          ),
-          onPressed: () {
-            _showItemCreateForm(context, itemListViewModel);
-          },
-        ),
+        )
       ),
     );
   }
@@ -149,7 +197,7 @@ class _ItemListViewMobileState extends State<ItemListViewMobile> {
                     ),
                     TextButton(
                       onPressed: () async {
-                        Item item = new Item(itemNameEntered, itemPrice, DateTime.now());
+                        Item item = new Item(itemNameEntered, itemPrice, DateTime.now(), this.group);
 
                         itemListViewModel.addGroup(item);
                         setState(() {

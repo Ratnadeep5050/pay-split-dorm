@@ -10,5 +10,5 @@ class Item{
   int itemPaymentState = 0;
   List itemPricePaymentStatus = [];
 
-  Item(this.itemName, this.itemPrice, this.itemBoughtAt);
+  Item(this.itemName, this.itemPrice, this.itemBoughtAt, this.itemGroup);
 }
