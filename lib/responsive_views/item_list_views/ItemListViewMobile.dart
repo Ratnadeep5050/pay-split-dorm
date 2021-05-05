@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pay_split/RouteNames.dart';
 import 'package:pay_split/models/Group.dart';
 import 'package:pay_split/models/Item.dart';
 import 'package:pay_split/viewmodels/GroupsListViewModel.dart';
@@ -50,18 +51,28 @@ class _ItemListViewMobileState extends State<ItemListViewMobile> {
                               child: Text(
                                   "Add member"
                               ),
-                              value: "/newchat"
+                              value: "/addMember"
+                          ),
+                          PopupMenuItem(
+                              child: Text(
+                                  "See members"
+                              ),
+                              value: "/seeMembers"
                           ),
                           PopupMenuItem(
                               child: Text(
                                   "Add item"
                               ),
-                              value: "/new-group-chat"
+                              value: "/addItem"
                           ),
                         ],
-                        onSelected: (route) {
-                          // Note You must create respective pages for navigation
-                          //Navigator.pushNamed(context, route);
+                        onSelected: (value) {
+                          if(value == "/addItem") {
+                            _showItemCreateForm(context, itemListViewModel);
+                          }
+                          else if(value == "/addMember") {
+                            Navigator.pushNamed(context, memberSearchView);
+                          }
                         },
                       )
                     ],
