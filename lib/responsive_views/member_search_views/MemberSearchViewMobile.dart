@@ -1,12 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:pay_split/models/Group.dart';
 import 'package:pay_split/models/User.dart';
 
 class MemberSearchViewMobile extends StatefulWidget {
+  Group group;
+
+  MemberSearchViewMobile(this.group);
+
   @override
-  _MemberSearchViewMobileState createState() => _MemberSearchViewMobileState();
+  _MemberSearchViewMobileState createState() => _MemberSearchViewMobileState(this.group);
 }
 
 class _MemberSearchViewMobileState extends State<MemberSearchViewMobile> {
+  Group group;
+
+  _MemberSearchViewMobileState(this.group);
+
   String memberPhoneNumberEntered = "";
   List<User> filteredUsers = [];
   User _user = new User.makeObject();
@@ -85,6 +94,7 @@ class _MemberSearchViewMobileState extends State<MemberSearchViewMobile> {
                       return Container(
                         padding: EdgeInsets.all(5),
                         child: Card(
+                          elevation: 4,
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -123,7 +133,7 @@ class _MemberSearchViewMobileState extends State<MemberSearchViewMobile> {
                                       Icons.add
                                   ),
                                   onPressed: () {
-
+                                    group.groupMembers.add(filteredUsers[index]);
                                   },
                                 ),
                               )

@@ -71,7 +71,10 @@ class _ItemListViewMobileState extends State<ItemListViewMobile> {
                             _showItemCreateForm(context, itemListViewModel);
                           }
                           else if(value == "/addMember") {
-                            Navigator.pushNamed(context, memberSearchView);
+                            Navigator.pushNamed(context, memberSearchView, arguments: group);
+                          }
+                          else if(value == "/seeMembers") {
+                            Navigator.pushNamed(context, memberListView, arguments: group);
                           }
                         },
                       )
