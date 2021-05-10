@@ -6,7 +6,7 @@ import 'package:pay_split/RouteGenerator.dart';
 import 'package:pay_split/viewmodels/DrawerModel.dart';
 import 'package:pay_split/viewmodels/GroupsListViewModel.dart';
 import 'package:pay_split/viewmodels/ItemsListViewModel.dart';
-import 'package:pay_split/views/HomeView.dart';
+import 'package:pay_split/views/LoginView.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -40,7 +40,7 @@ class _MyAppState extends State<MyApp> {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: HomeView()
+      home: LoginView()
     );
   }
 }
