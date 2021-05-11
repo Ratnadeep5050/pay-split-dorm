@@ -28,6 +28,7 @@ class _MemberListViewState extends State<MemberListView> {
       mediumTablet: MembersListViewMobile(this.group),
       desktop: MembersListViewMobile(this.group),
       iPhone8ToXSMax: MembersListViewMobile(this.group),
+      loginSignUpView: false,
     );
   }
 }

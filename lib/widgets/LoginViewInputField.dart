@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:pay_split/viewmodels/AuthenticationViewModel.dart';
+import 'package:provider/provider.dart';
 
 class LoginViewInputField extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
+    final authenticationViewModel = Provider.of<AuthenticationViewModel>(context);
+
     return Column(
       children: <Widget>[
         Container(
@@ -18,6 +22,9 @@ class LoginViewInputField extends StatelessWidget{
                 hintStyle: TextStyle(color: Colors.grey),
                 border: InputBorder.none
             ),
+            onChanged: (email) {
+              authenticationViewModel.emailSubmit(email);
+            },
           ),
         ),
         Container(
@@ -28,11 +35,15 @@ class LoginViewInputField extends StatelessWidget{
               )
           ),
           child: TextField(
+            obscureText: true,
             decoration: InputDecoration(
                 hintText: "Enter your password",
                 hintStyle: TextStyle(color: Colors.grey),
                 border: InputBorder.none
             ),
+            onChanged: (password) {
+              authenticationViewModel.passwordSubmit(password);
+            },
           ),
         ),
       ],

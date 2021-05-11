@@ -20,6 +20,7 @@ class _HomeViewState extends State<HomeView> {
       mediumTablet: HomeViewMobile(),
       desktop: HomeViewMobile(),
       iPhone8ToXSMax: HomeViewMobile(),
+      loginSignUpView: false,
     );
   }
 }

@@ -24,7 +24,7 @@ class _MembersListViewMobileState extends State<MembersListViewMobile> {
           child: ListView.builder(
             itemCount: group.groupMembers.length,
             itemBuilder: (BuildContext context, index) {
-              User user = group.groupMembers[index];
+              AppUser user = group.groupMembers[index];
               return Container(
                 child: Card (
                   elevation: 4,

@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:pay_split/responsive_ui/ScreenTypeLayout.dart';
 import 'package:pay_split/responsive_views/HomeViewMobile.dart';
@@ -21,6 +22,7 @@ class _LoginViewState extends State<LoginView> {
       mediumTablet: LoginViewMobile(),
       desktop: LoginViewMobile(),
       iPhone8ToXSMax: LoginViewMobile(),
+      loginSignUpView: true,
     );
   }
 }

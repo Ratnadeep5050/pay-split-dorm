@@ -4,3 +4,4 @@ const String userAddedGroupsView = "/userAddedGroupsView";
 const String itemListView = "/itemListView";
 const String memberSearchView = "/memberSearchView";
 const String memberListView = "/memberListView";
+const String signupView = "/signupView";

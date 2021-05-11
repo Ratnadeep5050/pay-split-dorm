@@ -27,6 +27,7 @@ class _ItemListViewState extends State<ItemListView> {
       mediumTablet: ItemListViewMobile(this.group),
       desktop: ItemListViewMobile(this.group),
       iPhone8ToXSMax: ItemListViewMobile(this.group),
+      loginSignUpView: false,
     );
   }
 }

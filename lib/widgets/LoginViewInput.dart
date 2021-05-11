@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pay_split/RouteNames.dart';
 import 'package:pay_split/widgets/LoginViewButton.dart';
 import 'package:pay_split/widgets/LoginViewInputField.dart';
 
@@ -20,9 +21,14 @@ class LoginViewInput extends StatelessWidget {
               child: LoginViewInputField(),
             ),
             SizedBox(height: 40,),
-            Text(
-              "Forgot Password?",
-              style: TextStyle(color: Colors.black),
+            GestureDetector(
+              child: Text(
+                "Sign up",
+                style: TextStyle(color: Colors.black),
+              ),
+              onTap: () {
+                Navigator.pushNamed(context, signupView);
+              },
             ),
             SizedBox(height: 40,),
             LoginViewButton()

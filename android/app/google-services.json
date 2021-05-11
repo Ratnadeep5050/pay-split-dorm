@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1095376857514",
+    "project_id": "pay-split-80f50",
+    "storage_bucket": "pay-split-80f50.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1095376857514:android:f61d6908147101a5f863d3",
+        "android_client_info": {
+          "package_name": "com.inventree.pay_split"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1095376857514-oigf7ikmjbehq6h4cr4tca0pdu9tf396.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAaLRcybZVeEOoqF2moO1PUkRCH8k_RcjM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1095376857514-oigf7ikmjbehq6h4cr4tca0pdu9tf396.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

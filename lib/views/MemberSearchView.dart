@@ -28,6 +28,7 @@ class _MemberSearchViewState extends State<MemberSearchView> {
       mediumTablet: MemberSearchViewMobile(this.group),
       desktop: MemberSearchViewMobile(this.group),
       iPhone8ToXSMax: MemberSearchViewMobile(this.group),
+      loginSignUpView: false,
     );
   }
 }

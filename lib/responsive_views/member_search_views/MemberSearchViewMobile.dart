@@ -17,8 +17,8 @@ class _MemberSearchViewMobileState extends State<MemberSearchViewMobile> {
   _MemberSearchViewMobileState(this.group);
 
   String memberPhoneNumberEntered = "";
-  List<User> filteredUsers = [];
-  User _user = new User.makeObject();
+  List<AppUser> filteredUsers = [];
+  AppUser _user = new AppUser.makeObject();
 
   @override
   void initState() {

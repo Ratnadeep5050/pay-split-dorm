@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:pay_split/responsive_ui/ResponsiveBuilder.dart';
 import 'package:pay_split/viewmodels/DrawerModel.dart';
@@ -14,6 +15,7 @@ class ScreenTypeLayout extends StatefulWidget {
   final Widget mediumTablet;
   final Widget desktop;
   final Widget iPhone8ToXSMax;
+  final bool loginSignUpView;
 
   ScreenTypeLayout({
     required this.smallMobile,
@@ -22,14 +24,19 @@ class ScreenTypeLayout extends StatefulWidget {
     required this.smallTablet,
     required this.mediumTablet,
     required this.desktop,
-    required this.iPhone8ToXSMax
+    required this.iPhone8ToXSMax,
+    required this.loginSignUpView
   });
 
   @override
-  _ScreenTypeLayoutState createState() => _ScreenTypeLayoutState();
+  _ScreenTypeLayoutState createState() => _ScreenTypeLayoutState(this.loginSignUpView);
 }
 
 class _ScreenTypeLayoutState extends State<ScreenTypeLayout> {
+  final bool loginSignUpView;
+
+  _ScreenTypeLayoutState(this.loginSignUpView);
+
   @override
   Widget build(BuildContext context) {
     final drawerModel = Provider.of<DrawerModel>(context);
@@ -147,66 +154,116 @@ class _ScreenTypeLayoutState extends State<ScreenTypeLayout> {
               tween: Tween<double>(begin: 0, end: drawerModel.value),
               duration: Duration(milliseconds: 500),
               builder: (_, double val, __) {
-                return Transform(
-                  alignment: Alignment.center,
-                  transform: Matrix4.identity()
-                    ..setEntry(3, 2, 0.001)
-                    ..setEntry(0, 3, 200 * val)
-                    ..rotateY((pi/6) * val),
-                  child: SafeArea(
-                    child: Scaffold(
-                      appBar: AppBar(
-                        backgroundColor: Colors.black,
-                        leading: IconButton(
-                          icon: Icon(
-                            Icons.dehaze,
-                            color: Colors.white,
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              drawerModel.drawerToggle();
-                            });
+                if(loginSignUpView) {
+                  return Transform(
+                    alignment: Alignment.center,
+                    transform: Matrix4.identity()
+                      ..setEntry(3, 2, 0.001)
+                      ..setEntry(0, 3, 200 * val)
+                      ..rotateY((pi/6) * val),
+                    child: SafeArea(
+                      child: Scaffold(
+                        body: ResponsiveBuilder(
+                          builder: (context, sizingInformation) {
+                            if(sizingInformation.deviceScreenType == DeviceScreenType.SmallMobile) {
+                              if(widget.smallMobile != null) {
+                                return widget.smallMobile;
+                              }
+                            }
+                            if(sizingInformation.deviceScreenType == DeviceScreenType.MediumMobile) {
+                              if(widget.mediumMobile != null) {
+                                return widget.mediumMobile;
+                              }
+                            }
+                            if(sizingInformation.deviceScreenType == DeviceScreenType.LargeMobile) {
+                              if(widget.largeMobile != null) {
+                                return widget.largeMobile;
+                              }
+                            }
+                            if(sizingInformation.deviceScreenType == DeviceScreenType.SmallTablet) {
+                              if(widget.smallTablet != null) {
+                                return widget.smallTablet;
+                              }
+                            }
+                            if(sizingInformation.deviceScreenType == DeviceScreenType.MediumTablet) {
+                              if(widget.mediumTablet != null) {
+                                return widget.mediumTablet;
+                              }
+                            }
+                            if(sizingInformation.deviceScreenType == DeviceScreenType.Desktop) {
+                              if(widget.desktop != null) {
+                                return widget.desktop;
+                              }
+                            }
+                            return widget.iPhone8ToXSMax;
                           },
                         ),
                       ),
-                      body: ResponsiveBuilder(
-                        builder: (context, sizingInformation) {
-                          if(sizingInformation.deviceScreenType == DeviceScreenType.SmallMobile) {
-                            if(widget.smallMobile != null) {
-                              return widget.smallMobile;
+                    ),
+                  );
+                }
+                else {
+                  return Transform(
+                    alignment: Alignment.center,
+                    transform: Matrix4.identity()
+                      ..setEntry(3, 2, 0.001)
+                      ..setEntry(0, 3, 200 * val)
+                      ..rotateY((pi/6) * val),
+                    child: SafeArea(
+                      child: Scaffold(
+                        appBar: AppBar(
+                          backgroundColor: Colors.black,
+                          leading: IconButton(
+                            icon: Icon(
+                              Icons.dehaze,
+                              color: Colors.white,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                drawerModel.drawerToggle();
+                              });
+                            },
+                          ),
+                        ),
+                        body: ResponsiveBuilder(
+                          builder: (context, sizingInformation) {
+                            if(sizingInformation.deviceScreenType == DeviceScreenType.SmallMobile) {
+                              if(widget.smallMobile != null) {
+                                return widget.smallMobile;
+                              }
                             }
-                          }
-                          if(sizingInformation.deviceScreenType == DeviceScreenType.MediumMobile) {
-                            if(widget.mediumMobile != null) {
-                              return widget.mediumMobile;
+                            if(sizingInformation.deviceScreenType == DeviceScreenType.MediumMobile) {
+                              if(widget.mediumMobile != null) {
+                                return widget.mediumMobile;
+                              }
                             }
-                          }
-                          if(sizingInformation.deviceScreenType == DeviceScreenType.LargeMobile) {
-                            if(widget.largeMobile != null) {
-                              return widget.largeMobile;
+                            if(sizingInformation.deviceScreenType == DeviceScreenType.LargeMobile) {
+                              if(widget.largeMobile != null) {
+                                return widget.largeMobile;
+                              }
                             }
-                          }
-                          if(sizingInformation.deviceScreenType == DeviceScreenType.SmallTablet) {
-                            if(widget.smallTablet != null) {
-                              return widget.smallTablet;
+                            if(sizingInformation.deviceScreenType == DeviceScreenType.SmallTablet) {
+                              if(widget.smallTablet != null) {
+                                return widget.smallTablet;
+                              }
                             }
-                          }
-                          if(sizingInformation.deviceScreenType == DeviceScreenType.MediumTablet) {
-                            if(widget.mediumTablet != null) {
-                              return widget.mediumTablet;
+                            if(sizingInformation.deviceScreenType == DeviceScreenType.MediumTablet) {
+                              if(widget.mediumTablet != null) {
+                                return widget.mediumTablet;
+                              }
                             }
-                          }
-                          if(sizingInformation.deviceScreenType == DeviceScreenType.Desktop) {
-                            if(widget.desktop != null) {
-                              return widget.desktop;
+                            if(sizingInformation.deviceScreenType == DeviceScreenType.Desktop) {
+                              if(widget.desktop != null) {
+                                return widget.desktop;
+                              }
                             }
-                          }
-                          return widget.iPhone8ToXSMax;
-                        },
+                            return widget.iPhone8ToXSMax;
+                          },
+                        ),
                       ),
                     ),
-                  ),
-                );
+                  );
+                }
               },
             ),
           ],

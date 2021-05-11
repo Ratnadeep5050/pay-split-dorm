@@ -4,7 +4,7 @@ import 'package:pay_split/models/User.dart';
 class Item{
   String itemName = "";
   double itemPrice = 0;
-  late User itemBoughtBy;
+  late AppUser itemBoughtBy;
   late DateTime itemBoughtAt;
   late Group itemGroup;
   int itemPaymentState = 0;

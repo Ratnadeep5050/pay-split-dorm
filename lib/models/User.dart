@@ -1,7 +1,7 @@
-class User {
+class AppUser {
   String name = "";
   String phoneNumber = "";
-  List<User> userList = [];
+  List<AppUser> userList = [];
 
   /*
     User(name: "Sadman", phoneNumber: "000")
@@ -16,34 +16,34 @@ class User {
 
      */
 
-  User.makeObject();
+  AppUser.makeObject();
 
   addDummyData() {
     userList.add(
-        User("Sadman", "000")
+        AppUser("Sadman", "000")
     );
     userList.add(
-        User("Toorja", "001")
+        AppUser("Toorja", "001")
     );
     userList.add(
-        User("Samir", "010")
+        AppUser("Samir", "010")
     );
     userList.add(
-        User("Anika", "011")
+        AppUser("Anika", "011")
     );
     userList.add(
-        User("Jaber", "100")
+        AppUser("Jaber", "100")
     );
     userList.add(
-        User("Sagol", "101")
+        AppUser("Sagol", "101")
     );
     userList.add(
-        User("Bolod", "110")
+        AppUser("Bolod", "110")
     );
     userList.add(
-        User("Gadha", "111")
+        AppUser("Gadha", "111")
     );
   }
 
-  User(this.name, this.phoneNumber);
+  AppUser(this.name, this.phoneNumber);
 }
