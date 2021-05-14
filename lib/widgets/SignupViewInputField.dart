@@ -18,6 +18,24 @@ class SignupViewInputField extends StatelessWidget{
           ),
           child: TextField(
             decoration: InputDecoration(
+                hintText: "Enter username",
+                hintStyle: TextStyle(color: Colors.grey),
+                border: InputBorder.none
+            ),
+            onChanged: (username) {
+              authenticationViewModel.usernameSubmit(username);
+            },
+          ),
+        ),
+        Container(
+          padding: EdgeInsets.all(10),
+          decoration: BoxDecoration(
+              border: Border(
+                  bottom: BorderSide(color: Colors.grey)
+              )
+          ),
+          child: TextField(
+            decoration: InputDecoration(
                 hintText: "Enter your email",
                 hintStyle: TextStyle(color: Colors.grey),
                 border: InputBorder.none
@@ -43,6 +61,24 @@ class SignupViewInputField extends StatelessWidget{
             ),
             onChanged: (password) {
               authenticationViewModel.passwordSubmit(password);
+            },
+          ),
+        ),
+        Container(
+          padding: EdgeInsets.all(10),
+          decoration: BoxDecoration(
+              border: Border(
+                  bottom: BorderSide(color: Colors.grey)
+              )
+          ),
+          child: TextField(
+            decoration: InputDecoration(
+                hintText: "Enter phone number",
+                hintStyle: TextStyle(color: Colors.grey),
+                border: InputBorder.none
+            ),
+            onChanged: (phoneNumber) {
+              authenticationViewModel.phoneNumberSubmit(phoneNumber);
             },
           ),
         ),

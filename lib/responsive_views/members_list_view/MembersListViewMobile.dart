@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pay_split/models/Group.dart';
-import 'package:pay_split/models/User.dart';
+import 'package:pay_split/models/UserModel.dart';
 
 class MembersListViewMobile extends StatefulWidget {
   Group group;
@@ -24,7 +24,7 @@ class _MembersListViewMobileState extends State<MembersListViewMobile> {
           child: ListView.builder(
             itemCount: group.groupMembers.length,
             itemBuilder: (BuildContext context, index) {
-              AppUser user = group.groupMembers[index];
+              UserModel user = group.groupMembers[index];
               return Container(
                 child: Card (
                   elevation: 4,
@@ -39,7 +39,7 @@ class _MembersListViewMobileState extends State<MembersListViewMobile> {
                             children: [
                               Container(
                                 child: Text(
-                                  user.name,
+                                  user.username,
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 20

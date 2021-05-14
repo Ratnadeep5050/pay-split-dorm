@@ -32,11 +32,25 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        Provider<GroupsListViewModel>(create: (_) => GroupsListViewModel()),
-        Provider<ItemsListViewModel>(create: (_) => ItemsListViewModel()),
-        Provider<DrawerModel>(create: (_) => DrawerModel()),
-        ChangeNotifierProvider<AuthenticationViewModel>(create: (_) => AuthenticationViewModel()),
-        StreamProvider(create: (context) => context.read<AuthenticationService>().authStateChange, initialData: 0,)
+        Provider<GroupsListViewModel>(
+            create: (_) => GroupsListViewModel()
+        ),
+        Provider<ItemsListViewModel>(
+            create: (_) => ItemsListViewModel()
+        ),
+        Provider<DrawerModel>(
+            create: (_) => DrawerModel()
+        ),
+        ChangeNotifierProvider<AuthenticationViewModel>(
+            create: (_) => AuthenticationViewModel()
+        ),
+        Provider<AuthenticationService>(
+            create: (_) => AuthenticationService(FirebaseAuth.instance)
+        ),
+        StreamProvider(
+            create: (context) => context.read<AuthenticationService>().authStateChange,
+            initialData: 0
+        )
       ],
       child: MaterialApp(
           title: 'Flutter Demo',
@@ -46,7 +60,7 @@ class _MyAppState extends State<MyApp> {
           theme: ThemeData(
             primarySwatch: Colors.blue,
           ),
-          home: LoginView()
+          home: AuthenticationWrapper()
       ),
     );
   }
@@ -55,12 +69,15 @@ class _MyAppState extends State<MyApp> {
 class AuthenticationWrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final user = context.watch<User>();
+    print("U");
+    final user = context.watch<AuthenticationService>();
 
     if(user != null) {
+      print("User");
       return HomeView();
     }
     else {
+      print("User");
       return LoginView();
     }
   }

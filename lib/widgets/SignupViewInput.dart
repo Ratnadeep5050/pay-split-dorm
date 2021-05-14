@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pay_split/widgets/LoginViewButton.dart';
 import 'package:pay_split/widgets/LoginViewInputField.dart';
 import 'package:pay_split/widgets/SignupViewButton.dart';
+import 'package:pay_split/widgets/SignupViewInputField.dart';
 
 class SignupViewInput extends StatelessWidget {
   @override
@@ -18,7 +19,7 @@ class SignupViewInput extends StatelessWidget {
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(10)
               ),
-              child: LoginViewInputField(),
+              child: SignupViewInputField(),
             ),
             SizedBox(height: 40,),
             Text(

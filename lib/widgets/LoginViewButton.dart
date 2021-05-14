@@ -4,8 +4,6 @@ import 'package:pay_split/viewmodels/AuthenticationViewModel.dart';
 import 'package:provider/provider.dart';
 
 class LoginViewButton extends StatelessWidget{
-  AuthenticationService _authenticationService = AuthenticationService();
-
   @override
   Widget build(BuildContext context) {
     final authenticationViewModel = Provider.of<AuthenticationViewModel>(context);
@@ -30,7 +28,7 @@ class LoginViewButton extends StatelessWidget{
         ),
       ),
       onTap: () {
-        _authenticationService.signIn(authenticationViewModel.email, authenticationViewModel.password);
+        context.read<AuthenticationService>().signIn(authenticationViewModel.email, authenticationViewModel.password);
       },
     );
   }

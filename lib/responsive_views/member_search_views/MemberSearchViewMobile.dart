@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pay_split/models/Group.dart';
-import 'package:pay_split/models/User.dart';
+import 'package:pay_split/models/UserModel.dart';
 
 class MemberSearchViewMobile extends StatefulWidget {
   Group group;
@@ -17,8 +17,8 @@ class _MemberSearchViewMobileState extends State<MemberSearchViewMobile> {
   _MemberSearchViewMobileState(this.group);
 
   String memberPhoneNumberEntered = "";
-  List<AppUser> filteredUsers = [];
-  AppUser _user = new AppUser.makeObject();
+  List<UserModel> filteredUsers = [];
+  UserModel _user = new UserModel.makeObject();
 
   @override
   void initState() {
@@ -72,7 +72,7 @@ class _MemberSearchViewMobileState extends State<MemberSearchViewMobile> {
                             onChanged: (text) {
                               setState(() {
                                 filteredUsers = _user.userList
-                                    .where((user) => (user.name
+                                    .where((user) => (user.username
                                     .toLowerCase()
                                     .contains(text.toLowerCase()) ||
                                     user.phoneNumber.toLowerCase().contains(text.toLowerCase())))
@@ -106,7 +106,7 @@ class _MemberSearchViewMobileState extends State<MemberSearchViewMobile> {
                                   children: [
                                     Container(
                                       child: Text(
-                                          filteredUsers[index].name,
+                                          filteredUsers[index].username,
                                         style: TextStyle(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 20

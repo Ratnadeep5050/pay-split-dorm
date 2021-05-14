@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:pay_split/responsive_ui/ResponsiveBuilder.dart';
+import 'package:pay_split/services/AuthenticationService.dart';
 import 'package:pay_split/viewmodels/DrawerModel.dart';
 import 'package:provider/provider.dart';
 import '../enums/DeviceScreenType.dart';
@@ -141,7 +142,7 @@ class _ScreenTypeLayoutState extends State<ScreenTypeLayout> {
                             color: Colors.white,
                           ),
                           onTap: () {
-
+                            context.read<AuthenticationService>().signOut();
                           },
                         ),
                       ],
