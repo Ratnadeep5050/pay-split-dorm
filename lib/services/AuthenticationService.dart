@@ -6,11 +6,9 @@ class AuthenticationService {
 
   AuthenticationService(this._auth);
 
-  Stream<User?> get authStateChange => _auth.authStateChanges();
-
   Future<String> signUp(String email, String password) async {
     try {
-      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(email: email.trim(), password: password.trim());
+      await _auth.createUserWithEmailAndPassword(email: email.trim(), password: password.trim());
       return "Signed Up";
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
@@ -29,7 +27,7 @@ class AuthenticationService {
 
   Future<String> signIn(String email, String password) async {
     try {
-      UserCredential userCredential = await _auth.signInWithEmailAndPassword(email: email.trim(), password: password.trim());
+      await _auth.signInWithEmailAndPassword(email: email.trim(), password: password.trim());
       return "Signed In";
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
@@ -46,7 +44,7 @@ class AuthenticationService {
   Future<String> signOut() async {
     try {
       await _auth.signOut();
-      return "Signed In";
+      return "Signed Out";
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         print('No user found for that email.');

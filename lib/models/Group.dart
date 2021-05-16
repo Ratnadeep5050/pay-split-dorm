@@ -4,6 +4,7 @@ class Group {
   String groupName = "";
   int numberOfmembers = 0;
   late DateTime groupCreatedAt;
+  late UserModel groupCreator;
   List<UserModel> groupMembers = [];
 
   Group(this.groupName);

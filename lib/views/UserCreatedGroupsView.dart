@@ -13,7 +13,6 @@ class UserCreatedGroupsView extends StatelessWidget {
       mediumTablet: UserCreatedGroupsViewMobile(),
       desktop: UserCreatedGroupsViewMobile(),
       iPhone8ToXSMax: UserCreatedGroupsViewMobile(),
-      loginSignUpView: false,
     );
   }
 }

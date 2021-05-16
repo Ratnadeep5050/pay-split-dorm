@@ -1,10 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:pay_split/responsive_ui/ScreenTypeLayout.dart';
-import 'package:pay_split/responsive_views/HomeViewMobile.dart';
 import 'package:pay_split/responsive_views/login_view/LoginViewMobile.dart';
-import 'package:pay_split/viewmodels/GroupsListViewModel.dart';
-import 'package:provider/provider.dart';
+import 'package:pay_split/responsive_ui/LoginSignupScreenTypeLayout.dart';
 
 class LoginView extends StatefulWidget {
   @override
@@ -14,7 +11,7 @@ class LoginView extends StatefulWidget {
 class _LoginViewState extends State<LoginView> {
   @override
   Widget build(BuildContext context) {
-    return ScreenTypeLayout(
+    return LoginSignupScreenTypeLayout(
       smallMobile: LoginViewMobile(),
       mediumMobile: LoginViewMobile(),
       largeMobile: LoginViewMobile(),
@@ -22,7 +19,6 @@ class _LoginViewState extends State<LoginView> {
       mediumTablet: LoginViewMobile(),
       desktop: LoginViewMobile(),
       iPhone8ToXSMax: LoginViewMobile(),
-      loginSignUpView: true,
     );
   }
 }

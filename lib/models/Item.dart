@@ -8,7 +8,7 @@ class Item{
   late DateTime itemBoughtAt;
   late Group itemGroup;
   int itemPaymentState = 0;
-  List itemPricePaymentStatus = [];
+  List itemPricePaymentStatusByMembers = [];
 
   Item(this.itemName, this.itemPrice, this.itemBoughtAt, this.itemGroup);
 }

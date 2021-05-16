@@ -5,6 +5,7 @@ class UserModel {
   String email = "";
   String password = "";
   String phoneNumber = "";
+  String privilege = "";
 
   List<Group> userCreatedGroups = [];
   List<Group> groupsUserAddedTo = [];

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:pay_split/responsive_ui/ScreenTypeLayout.dart';
-import 'package:pay_split/responsive_views/login_view/LoginViewMobile.dart';
 import '../responsive_views/signup_view/SignupViewMobile.dart';
+import 'package:pay_split/responsive_ui/LoginSignupScreenTypeLayout.dart';
 
 class SignupView extends StatefulWidget {
   @override
@@ -11,7 +10,7 @@ class SignupView extends StatefulWidget {
 class _SignupViewState extends State<SignupView> {
   @override
   Widget build(BuildContext context) {
-    return ScreenTypeLayout(
+    return LoginSignupScreenTypeLayout(
       smallMobile: SignupViewMobile(),
       mediumMobile: SignupViewMobile(),
       largeMobile: SignupViewMobile(),
@@ -19,7 +18,6 @@ class _SignupViewState extends State<SignupView> {
       mediumTablet: SignupViewMobile(),
       desktop: SignupViewMobile(),
       iPhone8ToXSMax: SignupViewMobile(),
-      loginSignUpView: true,
     );
   }
 }

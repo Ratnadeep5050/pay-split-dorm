@@ -27,6 +27,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   double value = 0;
+  late User user;
 
   @override
   Widget build(BuildContext context) {
@@ -47,10 +48,6 @@ class _MyAppState extends State<MyApp> {
         Provider<AuthenticationService>(
             create: (_) => AuthenticationService(FirebaseAuth.instance)
         ),
-        StreamProvider(
-            create: (context) => context.read<AuthenticationService>().authStateChange,
-            initialData: 0
-        )
       ],
       child: MaterialApp(
           title: 'Flutter Demo',
@@ -69,17 +66,19 @@ class _MyAppState extends State<MyApp> {
 class AuthenticationWrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    print("U");
-    final user = context.watch<AuthenticationService>();
-
-    if(user != null) {
-      print("User");
-      return HomeView();
-    }
-    else {
-      print("User");
-      return LoginView();
-    }
+    return StreamBuilder(
+      stream: FirebaseAuth.instance.authStateChanges(),
+      builder: (context, snapshot) {
+        if(snapshot.hasData) {
+          print("Home ${snapshot.data}");
+          return HomeView();
+        }
+        else {
+          print("Login ${snapshot.data}");
+          return LoginView();
+        }
+      },
+    );
   }
 }
 
