@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:pay_split/responsive_ui/ResponsiveBuilder.dart';
 import 'package:pay_split/services/AuthenticationService.dart';
+import 'package:pay_split/services/CloudFirebaseService.dart';
 import 'package:pay_split/viewmodels/DrawerModel.dart';
 import 'package:provider/provider.dart';
 import '../enums/DeviceScreenType.dart';
@@ -32,9 +33,18 @@ class ScreenTypeLayout extends StatefulWidget {
 }
 
 class _ScreenTypeLayoutState extends State<ScreenTypeLayout> {
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     final drawerModel = Provider.of<DrawerModel>(context);
+    final cloudFirebaseService = Provider.of<CloudFirebaseService>(context);
+
+    cloudFirebaseService.getUserDataFromFirestore();
 
     return Scaffold(
         body: Stack(

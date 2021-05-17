@@ -1,6 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:pay_split/models/Group.dart';
 
 class UserModel {
+  String uid = "";
   String username = "";
   String email = "";
   String password = "";
@@ -27,6 +29,7 @@ class UserModel {
 
   UserModel.makeObject();
 
+  /*
   addDummyData() {
     userList.add(
         UserModel("Sadman", "000")
@@ -53,6 +56,7 @@ class UserModel {
         UserModel("Gadha", "111")
     );
   }
+  */
 
-  UserModel(this.username, this.phoneNumber);
+  UserModel(this.username, this.email, this.password, this.phoneNumber, this.privilege);
 }

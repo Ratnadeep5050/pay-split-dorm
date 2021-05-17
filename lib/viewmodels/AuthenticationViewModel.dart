@@ -1,29 +1,27 @@
 import 'package:flutter/cupertino.dart';
+import 'package:pay_split/models/UserModel.dart';
 
 class AuthenticationViewModel extends ChangeNotifier {
 
-  String email = "";
-  String password = "";
-  String username = "";
-  String phoneNumber = "";
+  UserModel userModel = new UserModel.makeObject();
 
   emailSubmit(String emailTyped) {
-    email = emailTyped;
+    userModel.email = emailTyped;
     notifyListeners();
   }
 
   usernameSubmit(String usernameTyped) {
-    username = usernameTyped;
+    userModel.username = usernameTyped;
     notifyListeners();
   }
 
   phoneNumberSubmit(String phoneNumberTyped) {
-    phoneNumber = phoneNumberTyped;
+    userModel.phoneNumber = phoneNumberTyped;
     notifyListeners();
   }
 
   passwordSubmit(String passwordTyped) {
-    password = passwordTyped;
+    userModel.password = passwordTyped;
     notifyListeners();
   }
 

@@ -28,7 +28,7 @@ class LoginViewButton extends StatelessWidget{
         ),
       ),
       onTap: () {
-        context.read<AuthenticationService>().signIn(authenticationViewModel.email, authenticationViewModel.password);
+        context.read<AuthenticationService>().signIn(authenticationViewModel.userModel.email, authenticationViewModel.userModel.password);
       },
     );
   }

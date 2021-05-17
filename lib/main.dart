@@ -1,10 +1,12 @@
 import 'dart:math';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:pay_split/RouteGenerator.dart';
+import 'package:pay_split/services/CloudFirebaseService.dart';
 import 'package:pay_split/viewmodels/AuthenticationViewModel.dart';
 import 'package:pay_split/viewmodels/DrawerModel.dart';
 import 'package:pay_split/viewmodels/GroupsListViewModel.dart';
@@ -35,6 +37,9 @@ class _MyAppState extends State<MyApp> {
       providers: [
         Provider<GroupsListViewModel>(
             create: (_) => GroupsListViewModel()
+        ),
+        Provider<CloudFirebaseService>(
+            create: (_) => CloudFirebaseService()
         ),
         Provider<ItemsListViewModel>(
             create: (_) => ItemsListViewModel()
@@ -69,13 +74,24 @@ class AuthenticationWrapper extends StatelessWidget {
     return StreamBuilder(
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (context, snapshot) {
-        if(snapshot.hasData) {
-          print("Home ${snapshot.data}");
-          return HomeView();
+        if(snapshot.connectionState == ConnectionState.active) {
+          if(snapshot.hasData) {
+            User user = FirebaseAuth.instance.currentUser!;
+            final uid = user.uid;
+            context.read<CloudFirebaseService>().userModel.uid = uid;
+            return HomeView();
+          }
+          else {
+            print(snapshot.data);
+            return LoginView();
+          }
         }
         else {
-          print("Login ${snapshot.data}");
-          return LoginView();
+          return Scaffold(
+            body: Center(
+              child: CircularProgressIndicator(),
+            ),
+          );
         }
       },
     );

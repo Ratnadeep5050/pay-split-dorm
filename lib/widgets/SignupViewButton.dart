@@ -28,7 +28,9 @@ class SignupViewButton extends StatelessWidget{
         ),
       ),
       onTap: () {
-        context.read<AuthenticationService>().signUp(authenticationViewModel.email, authenticationViewModel.password);
+        context.read<AuthenticationService>().signUp(authenticationViewModel.userModel.email, authenticationViewModel.userModel.password);
+        context.read<AuthenticationService>().addUserDataToFireStore(authenticationViewModel.userModel);
+        Navigator.pop(context);
       },
     );
   }

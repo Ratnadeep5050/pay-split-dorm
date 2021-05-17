@@ -23,7 +23,7 @@ class _MemberSearchViewMobileState extends State<MemberSearchViewMobile> {
   @override
   void initState() {
     // TODO: implement initState
-    _user.addDummyData();
+    //_user.addDummyData();
     super.initState();
   }
 

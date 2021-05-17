@@ -1,8 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:pay_split/models/UserModel.dart';
 
 class AuthenticationService {
 
   final FirebaseAuth _auth;
+  FirebaseFirestore _ref = FirebaseFirestore.instance;
 
   AuthenticationService(this._auth);
 
@@ -32,8 +36,10 @@ class AuthenticationService {
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         print('No user found for that email.');
+        Fluttertoast.showToast(msg: "Wrong Credentials");
         return "No user found";
       } else if (e.code == 'wrong-password') {
+        Fluttertoast.showToast(msg: "Wrong Password");
         print('Wrong password provided for that user.');
         return "Wrong password";
       }
@@ -55,6 +61,17 @@ class AuthenticationService {
       }
     }
     return "";
+  }
+
+  Future<void> addUserDataToFireStore(UserModel userModel) {
+    return _ref.collection("users").add({
+      "email": userModel.email,
+      "password": userModel.password,
+      "username": userModel.username,
+      "phoneNumber": userModel.phoneNumber,
+      "groupsCreadted": userModel.userCreatedGroups,
+      "groupsUserAddedTo": userModel.groupsUserAddedTo
+    });
   }
 
 }
