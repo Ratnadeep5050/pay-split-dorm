@@ -12,8 +12,8 @@ class AuthenticationService {
 
   Future<String> signUp(String email, String password) async {
     try {
-      await _auth.createUserWithEmailAndPassword(email: email.trim(), password: password.trim());
-      return "Signed Up";
+      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(email: email.trim(), password: password.trim());
+      return userCredential.user!.uid;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
         print('The password provided is too weak.');
@@ -62,16 +62,4 @@ class AuthenticationService {
     }
     return "";
   }
-
-  Future<void> addUserDataToFireStore(UserModel userModel) {
-    return _ref.collection("users").add({
-      "email": userModel.email,
-      "password": userModel.password,
-      "username": userModel.username,
-      "phoneNumber": userModel.phoneNumber,
-      "groupsCreadted": userModel.userCreatedGroups,
-      "groupsUserAddedTo": userModel.groupsUserAddedTo
-    });
-  }
-
 }

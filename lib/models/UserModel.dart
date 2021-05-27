@@ -29,6 +29,28 @@ class UserModel {
 
   UserModel.makeObject();
 
+  static UserModel getUserDataFromDocumentSnapshot(Map<String, dynamic> userDataFromFirestore) {
+    //print("In model");
+    //print(multiplayerGame);
+    return UserModel(
+        userDataFromFirestore["username"],
+        userDataFromFirestore["email"],
+        userDataFromFirestore["password"],
+        userDataFromFirestore["phoneNumber"],
+    );
+  }
+
+  toJson() {
+    return {
+      "email": this.email,
+      "password": this.password,
+      "username": this.username,
+      "phoneNumber": this.phoneNumber,
+      "groupsCreadted": this.userCreatedGroups,
+      "groupsUserAddedTo": this.groupsUserAddedTo
+    };
+  }
+
   /*
   addDummyData() {
     userList.add(
@@ -58,5 +80,5 @@ class UserModel {
   }
   */
 
-  UserModel(this.username, this.email, this.password, this.phoneNumber, this.privilege);
+  UserModel(this.username, this.email, this.password, this.phoneNumber);
 }

@@ -46,6 +46,8 @@ class _ScreenTypeLayoutState extends State<ScreenTypeLayout> {
 
     cloudFirebaseService.getUserDataFromFirestore();
 
+    //print("Username: ${cloudFirebaseService.activeUser.username}");
+
     return Scaffold(
         body: Stack(
           children: [
@@ -77,7 +79,7 @@ class _ScreenTypeLayoutState extends State<ScreenTypeLayout> {
                           height: 10,
                         ),
                         Text(
-                          "Wolf",
+                          cloudFirebaseService.activeUser.username,
                           style: TextStyle(
                               fontSize: 20,
                               color: Colors.white

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pay_split/services/AuthenticationService.dart';
+import 'package:pay_split/services/CloudFirebaseService.dart';
 import 'package:pay_split/viewmodels/AuthenticationViewModel.dart';
 import 'package:provider/provider.dart';
 
@@ -27,9 +28,10 @@ class SignupViewButton extends StatelessWidget{
           ),
         ),
       ),
-      onTap: () {
-        context.read<AuthenticationService>().signUp(authenticationViewModel.userModel.email, authenticationViewModel.userModel.password);
-        context.read<AuthenticationService>().addUserDataToFireStore(authenticationViewModel.userModel);
+      onTap: () async {
+        String uid = await context.read<AuthenticationService>().signUp(authenticationViewModel.userModel.email, authenticationViewModel.userModel.password);
+        print("Signed Up ID: $uid");
+        context.read<CloudFirebaseService>().addUserDataToFireStore(authenticationViewModel.userModel, uid);
         Navigator.pop(context);
       },
     );

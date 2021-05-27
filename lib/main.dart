@@ -77,6 +77,7 @@ class AuthenticationWrapper extends StatelessWidget {
         if(snapshot.connectionState == ConnectionState.active) {
           if(snapshot.hasData) {
             User user = FirebaseAuth.instance.currentUser!;
+            print("Auth UID: ${user.uid}");
             final uid = user.uid;
             context.read<CloudFirebaseService>().userModel.uid = uid;
             return HomeView();
