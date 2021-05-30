@@ -3,6 +3,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:pay_split/RouteNames.dart';
+import 'package:pay_split/models/Group.dart';
+import 'package:pay_split/services/CloudFirebaseService.dart';
 import 'package:pay_split/viewmodels/DrawerModel.dart';
 import 'package:pay_split/viewmodels/GroupsListViewModel.dart';
 import 'package:provider/provider.dart';
@@ -218,7 +220,8 @@ class _HomeViewMobileState extends State<HomeViewMobile> {
                     ),
                     TextButton(
                       onPressed: () async {
-                        homeViewModel.addGroup(groupNameEntered);
+                        Group _group = Group(groupNameEntered);
+                        context.read<CloudFirebaseService>().addGroupToFirestore(_group);
                         setState(() {
 
                         });

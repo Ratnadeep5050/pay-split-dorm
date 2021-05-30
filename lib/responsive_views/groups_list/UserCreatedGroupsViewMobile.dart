@@ -1,7 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:pay_split/RouteNames.dart';
 import 'package:pay_split/viewmodels/DrawerModel.dart';
+import 'package:pay_split/models/Group.dart';
 import 'package:pay_split/viewmodels/GroupsListViewModel.dart';
 import 'package:provider/provider.dart';
 
@@ -59,6 +62,39 @@ class _UserCreatedGroupsViewMobileState extends State<UserCreatedGroupsViewMobil
                       )
                     ],
                   )
+                ),
+                Container(
+                  child: StreamBuilder(
+                    stream: FirebaseFirestore.instance.collection("groups").snapshots(),
+                    builder: (BuildContext context, AsyncSnapshot snapshot) {
+                      if(snapshot.hasData) {
+                        DocumentSnapshot groups = snapshot.data;
+                        print("d");
+                        //Group group = Group.getGroupDataFromDocumentSnapshot(groups.data());
+                        return Container(
+                          height: MediaQuery.of(context).size.height*(10/100),
+                          child: GestureDetector(
+                            child: Card(
+                              elevation: 3,
+                              child: Container(
+                                padding: EdgeInsets.all(10),
+                                child: Text(
+                                  "Kisu Nai",
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            ),
+                            onTap: () {
+                              //Navigator.pushNamed(context, itemListView, arguments: groupsListViewModel.groupList[index]);
+                            },
+                          ),
+                        );
+                      }
+                      else {
+                        return Container();
+                      }
+                    },
+                  ),
                 ),
                 Container(
                   child: StreamProvider.value(
