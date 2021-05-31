@@ -82,60 +82,45 @@ class _ItemListViewMobileState extends State<ItemListViewMobile> {
                   )
               ),
               Container(
-                child: StreamProvider.value(
-                  value: itemListViewModel.streamController.stream,
-                  initialData: "No items created yet",
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: itemListViewModel.itemList.length,
-                    itemBuilder: (BuildContext context, index) {
-                      if(itemListViewModel.itemList[index].itemGroup == group) {
-                        return Container(
-                          height: MediaQuery.of(context).size.height*(15/100),
-                          child: Card(
-                              elevation: 5,
-                              child: Column(
-                                children: [
-                                  Container(
-                                    margin: EdgeInsets.all(5),
-                                    child: Text(
-                                      itemListViewModel.itemList[index].itemName,
-                                      style: TextStyle(
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.bold
-                                      ),
-                                    ),
-                                  ),
-                                  Container(
-                                    margin: EdgeInsets.all(5),
-                                    child: Text(
-                                      "Price: ${itemListViewModel.itemList[index].itemPrice}",
-                                      style: TextStyle(
-                                          fontSize: 15
-                                      ),
-                                    ),
-                                  ),
-                                  Container(
-                                    margin: EdgeInsets.all(5),
-                                    child: Text(
-                                      itemListViewModel.itemList[index].itemBoughtAt.toString(),
-                                      style: TextStyle(
-                                          fontSize: 12,
-                                          fontStyle: FontStyle.italic,
-                                          color: Colors.black54
-                                      ),
-                                    ),
-                                  )
-                                ],
-                              )
+                height: MediaQuery.of(context).size.height*(15/100),
+                child: Card(
+                    elevation: 5,
+                    child: Column(
+                      children: [
+                        Container(
+                          margin: EdgeInsets.all(5),
+                          child: Text(
+                            "Dummy",
+                            style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold
+                            ),
                           ),
-                        );
-                      }
-                      return Container();
-                    },
-                  ),
+                        ),
+                        Container(
+                          margin: EdgeInsets.all(5),
+                          child: Text(
+                            "Dummy Price",
+                            style: TextStyle(
+                                fontSize: 15
+                            ),
+                          ),
+                        ),
+                        Container(
+                          margin: EdgeInsets.all(5),
+                          child: Text(
+                            "Dummy Time",
+                            style: TextStyle(
+                                fontSize: 12,
+                                fontStyle: FontStyle.italic,
+                                color: Colors.black54
+                            ),
+                          ),
+                        )
+                      ],
+                    )
                 ),
-              ),
+              )
             ],
           ),
         )

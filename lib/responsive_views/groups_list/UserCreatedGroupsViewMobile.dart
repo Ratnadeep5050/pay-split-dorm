@@ -15,6 +15,8 @@ class UserCreatedGroupsViewMobile extends StatefulWidget {
 
 class _UserCreatedGroupsViewMobileState extends State<UserCreatedGroupsViewMobile> {
   String groupNameEntered = "";
+  List<Group> groupList = [];
+
   @override
   Widget build(BuildContext context) {
     final groupsListViewModel = Provider.of<GroupsListViewModel>(context);
@@ -40,96 +42,62 @@ class _UserCreatedGroupsViewMobileState extends State<UserCreatedGroupsViewMobil
                         ),
                         padding: EdgeInsets.all(10),
                       ),
-                      PopupMenuButton(
-                        itemBuilder: (_) => [
-                          PopupMenuItem(
-                              child: Text(
-                                  "Add member"
-                              ),
-                              value: "/newchat"
-                          ),
-                          PopupMenuItem(
-                              child: Text(
-                                  "Add item"
-                              ),
-                              value: "/new-group-chat"
-                          ),
-                        ],
-                        onSelected: (route) {
-                          // Note You must create respective pages for navigation
-                          //Navigator.pushNamed(context, route);
-                        },
-                      )
                     ],
                   )
                 ),
-                Container(
-                  child: StreamBuilder(
-                    stream: FirebaseFirestore.instance.collection("groups").snapshots(),
-                    builder: (BuildContext context, AsyncSnapshot snapshot) {
-                      if(snapshot.hasData) {
-                        DocumentSnapshot groups = snapshot.data;
-                        print("d");
-                        //Group group = Group.getGroupDataFromDocumentSnapshot(groups.data());
-                        return Container(
-                          height: MediaQuery.of(context).size.height*(10/100),
-                          child: GestureDetector(
-                            child: Card(
-                              elevation: 3,
-                              child: Container(
-                                padding: EdgeInsets.all(10),
-                                child: Text(
-                                  "Kisu Nai",
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
-                            ),
-                            onTap: () {
-                              //Navigator.pushNamed(context, itemListView, arguments: groupsListViewModel.groupList[index]);
+                ListView(
+                  shrinkWrap: true,
+                  physics: ClampingScrollPhysics(),
+                  children: [
+                    StreamBuilder(
+                      stream: FirebaseFirestore.instance.collection("groups").snapshots(),
+                      builder: (BuildContext context, AsyncSnapshot snapshot) {
+                        if(snapshot.hasData) {
+                          QuerySnapshot groups = snapshot.data;
+
+                          groupList = Group.getGroupDataFromDocumentSnapshotList(groups.docs);
+
+                          return ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: groupList.length,
+                            itemBuilder: (BuildContext context, index) {
+                              return _getGroupCard(index);
                             },
-                          ),
-                        );
-                      }
-                      else {
-                        return Container();
-                      }
-                    },
-                  ),
-                ),
-                Container(
-                  child: StreamProvider.value(
-                    value: groupsListViewModel.streamController.stream,
-                    initialData: "No groups created yet",
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: groupsListViewModel.groupList.length,
-                      itemBuilder: (BuildContext context, index) {
-                        return Container(
-                          height: MediaQuery.of(context).size.height*(10/100),
-                          child: GestureDetector(
-                            child: Card(
-                              elevation: 3,
-                              child: Container(
-                                padding: EdgeInsets.all(10),
-                                child: Text(
-                                  groupsListViewModel.groupList[index].groupName,
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
-                            ),
-                            onTap: () {
-                              Navigator.pushNamed(context, itemListView, arguments: groupsListViewModel.groupList[index]);
-                            },
-                          ),
-                        );
+                          );
+                        }
+                        else {
+                          return Center(
+                              child: CircularProgressIndicator()
+                          );
+                        }
                       },
                     ),
-                  ),
-                ),
+                  ],
+                )
               ],
             ),
           )
       ),
+    );
+  }
+
+  Widget _getGroupCard(int index) {
+    Group group = groupList[index];
+
+    return GestureDetector(
+      child: Card(
+        elevation: 3,
+        child: Container(
+          padding: EdgeInsets.all(10),
+          child: Text(
+            group.groupName,
+            textAlign: TextAlign.center,
+          ),
+        ),
+      ),
+      onTap: () {
+        Navigator.pushNamed(context, itemListView, arguments: groupList[index]);
+      },
     );
   }
 }

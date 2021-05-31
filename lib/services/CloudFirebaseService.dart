@@ -36,4 +36,8 @@ class CloudFirebaseService {
     });
   }
 
+  Future getUserById(String userId) async {
+    return await _ref.collection("users").doc(userId).get();
+  }
+
 }
