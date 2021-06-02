@@ -2,13 +2,14 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:pay_split/models/Group.dart';
+import 'package:pay_split/models/Item.dart';
 import 'package:pay_split/models/UserModel.dart';
 
 class CloudFirebaseService {
   FirebaseFirestore _ref = FirebaseFirestore.instance;
   UserModel userModel = UserModel.makeObject();
   UserModel activeUser = UserModel.makeObject();
-  StreamController<Group> _streamController = StreamController<Group>.broadcast();
+  StreamController<Item> _streamController = StreamController<Item>.broadcast();
 
   getUserDataFromFirestore() async {
     print("Auth UID Cloud: ${userModel.uid}");
@@ -33,6 +34,17 @@ class CloudFirebaseService {
       "groupCreatedBy": userModel.uid,
       "groupMembers": [],
       "groupName": group.groupName,
+    });
+  }
+
+  Future<void> addItemToFirestore(Item item) {
+    return _ref.collection("items").add({
+      "itemBelongsToGroup": item.itemGroupId,
+      "itemBoughtAt": DateTime.now(),
+      "itemBoughtBy": item.itemBoughtById,
+      "itemName": item.itemName,
+      "itemPaymentStatusByMembers": [],
+      "itemPrice": item.itemPrice,
     });
   }
 

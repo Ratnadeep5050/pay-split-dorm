@@ -9,8 +9,8 @@ class UserModel {
   String phoneNumber = "";
   String privilege = "";
 
-  List<Group> userCreatedGroups = [];
-  List<Group> groupsUserAddedTo = [];
+  List userCreatedGroups = [];
+  List groupsUserAddedTo = [];
 
   List<UserModel> userList = [];
 
@@ -29,9 +29,33 @@ class UserModel {
 
   UserModel.makeObject();
 
+  static UserModel getGroupDataFromDocumentSnapshotMap(userDataFromFirestore) {
+    UserModel user = UserModel.makeObject();
+
+    user.uid = userDataFromFirestore.id;
+    user.username = userDataFromFirestore["username"];
+    user.password = userDataFromFirestore["password"];
+    user.phoneNumber = userDataFromFirestore["phoneNumber"];
+    user.userCreatedGroups = userDataFromFirestore["groupsCreadted"];
+    user.groupsUserAddedTo = userDataFromFirestore["groupsUserAddedTo"];
+
+    return user;
+
+  }
+
+  static UserModel getUserDataFromDocumentSnapshotList(List userDataFromFirestore, String phoneNumber) {
+    UserModel user = UserModel.makeObject();
+
+    for(var u in userDataFromFirestore) {
+      if(u["phoneNumber"] == phoneNumber) {
+        user = UserModel.getGroupDataFromDocumentSnapshotMap(u);
+      }
+    }
+
+    return user;
+  }
+
   static UserModel getUserDataFromDocumentSnapshot(Map<String, dynamic> userDataFromFirestore) {
-    //print("In model");
-    //print(multiplayerGame);
     return UserModel(
         userDataFromFirestore["username"],
         userDataFromFirestore["email"],

@@ -1,7 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:pay_split/RouteNames.dart';
 import 'package:pay_split/models/Group.dart';
 import 'package:pay_split/models/Item.dart';
+import 'package:pay_split/services/CloudFirebaseService.dart';
 import 'package:pay_split/viewmodels/GroupsListViewModel.dart';
 import 'package:pay_split/viewmodels/ItemsListViewModel.dart';
 import 'package:provider/provider.dart';
@@ -17,6 +19,7 @@ class ItemListViewMobile extends StatefulWidget {
 
 class _ItemListViewMobileState extends State<ItemListViewMobile> {
   Group group;
+  List<Item> itemList = [];
 
   _ItemListViewMobileState(this.group);
 
@@ -81,45 +84,34 @@ class _ItemListViewMobileState extends State<ItemListViewMobile> {
                     ],
                   )
               ),
-              Container(
-                height: MediaQuery.of(context).size.height*(15/100),
-                child: Card(
-                    elevation: 5,
-                    child: Column(
-                      children: [
-                        Container(
-                          margin: EdgeInsets.all(5),
-                          child: Text(
-                            "Dummy",
-                            style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold
-                            ),
-                          ),
-                        ),
-                        Container(
-                          margin: EdgeInsets.all(5),
-                          child: Text(
-                            "Dummy Price",
-                            style: TextStyle(
-                                fontSize: 15
-                            ),
-                          ),
-                        ),
-                        Container(
-                          margin: EdgeInsets.all(5),
-                          child: Text(
-                            "Dummy Time",
-                            style: TextStyle(
-                                fontSize: 12,
-                                fontStyle: FontStyle.italic,
-                                color: Colors.black54
-                            ),
-                          ),
-                        )
-                      ],
-                    )
-                ),
+              ListView(
+                shrinkWrap: true,
+                physics: ClampingScrollPhysics(),
+                children: [
+                  StreamBuilder(
+                    stream: FirebaseFirestore.instance.collection("items").snapshots(),
+                    builder: (BuildContext context, AsyncSnapshot snapshot) {
+                      if(snapshot.hasData) {
+                        QuerySnapshot items = snapshot.data;
+
+                        itemList = Item.getItemDataFromDocumentSnapshotList(items.docs, group.groupId);
+
+                        return ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: itemList.length,
+                          itemBuilder: (BuildContext context, index) {
+                            return _getItemCard(index);
+                          },
+                        );
+                      }
+                      else {
+                        return Center(
+                            child: CircularProgressIndicator()
+                        );
+                      }
+                    },
+                  ),
+                ],
               )
             ],
           ),
@@ -130,7 +122,7 @@ class _ItemListViewMobileState extends State<ItemListViewMobile> {
 
   _showItemCreateForm(BuildContext context, itemListViewModel) {
     String itemNameEntered = "";
-    double itemPrice = 0;
+    String itemPrice = "";
 
     return showDialog(
         context: context,
@@ -187,7 +179,7 @@ class _ItemListViewMobileState extends State<ItemListViewMobile> {
                           ),
                         ),
                         onChanged: (text) {
-                          itemPrice = double.parse(text);
+                          itemPrice = text;
                         },
                       ),
                     ),
@@ -196,13 +188,10 @@ class _ItemListViewMobileState extends State<ItemListViewMobile> {
                     ),
                     TextButton(
                       onPressed: () async {
-                        Item item = new Item(itemNameEntered, itemPrice, DateTime.now(), this.group);
+                        String itemBoughtById = context.read<CloudFirebaseService>().userModel.uid;
+                        Item item = new Item(itemNameEntered, itemPrice, itemBoughtById, DateTime.now(), this.group.groupId);
 
-                        itemListViewModel.addGroup(item);
-                        setState(() {
-
-                        });
-
+                        context.read<CloudFirebaseService>().addItemToFirestore(item);
                         Navigator.pop(context);
                       },
                       child: Text(
@@ -220,6 +209,44 @@ class _ItemListViewMobileState extends State<ItemListViewMobile> {
             ),
           );
         }
+    );
+  }
+
+  Widget _getItemCard(int index) {
+    Item item = itemList[index];
+
+    return GestureDetector(
+      child: Card(
+        elevation: 3,
+        child: Container(
+          padding: EdgeInsets.all(10),
+          child: Column(
+            children: [
+              Container(
+                child: Text(
+                  item.itemName,
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              Container(
+                child: Text(
+                  item.itemPrice.toString(),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              Container(
+                child: Text(
+                  item.itemBoughtAt.toIso8601String(),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+      onTap: () {
+        //Navigator.pushNamed(context, itemListView, arguments: groupList[index]);
+      },
     );
   }
 }

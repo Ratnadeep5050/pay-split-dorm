@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:pay_split/models/Group.dart';
 import 'package:pay_split/models/UserModel.dart';
@@ -19,6 +20,7 @@ class _MemberSearchViewMobileState extends State<MemberSearchViewMobile> {
   String memberPhoneNumberEntered = "";
   List<UserModel> filteredUsers = [];
   UserModel _user = new UserModel.makeObject();
+  String phoneNumber = "";
 
   @override
   void initState() {
@@ -71,12 +73,7 @@ class _MemberSearchViewMobileState extends State<MemberSearchViewMobile> {
                             ),
                             onChanged: (text) {
                               setState(() {
-                                filteredUsers = _user.userList
-                                    .where((user) => (user.username
-                                    .toLowerCase()
-                                    .contains(text.toLowerCase()) ||
-                                    user.phoneNumber.toLowerCase().contains(text.toLowerCase())))
-                                    .toList();
+                                phoneNumber = text;
                               });
                             },
                           ),
@@ -85,6 +82,54 @@ class _MemberSearchViewMobileState extends State<MemberSearchViewMobile> {
                     ],
                   ),
                 ),
+                Container(
+                  child: StreamBuilder(
+                    stream: FirebaseFirestore.instance.collection("users").snapshots(),
+                    builder: (BuildContext context, AsyncSnapshot snapshot) {
+                      if(snapshot.hasData) {
+                        QuerySnapshot users = snapshot.data;
+
+                        _user = UserModel.getUserDataFromDocumentSnapshotList(users.docs, phoneNumber);
+
+                        return Container(
+                          padding: EdgeInsets.all(5),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  child: Text(
+                                    _user.username,
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20
+                                    ),
+                                  ),
+                                ),
+                                Container(
+                                  child: Text(
+                                    _user.phoneNumber,
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 12,
+                                        fontStyle: FontStyle.italic,
+                                        color: Colors.black54
+                                      ),
+                                  ),
+                                )
+                              ],
+                            )
+                          );
+                      }
+                      else {
+                        return Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }
+                    },
+                  ),
+                )
+                /*
                 Container(
                   child: ListView.builder(
                     physics: ClampingScrollPhysics(),
@@ -144,6 +189,7 @@ class _MemberSearchViewMobileState extends State<MemberSearchViewMobile> {
                     },
                   ),
                 ),
+                */
               ],
             ),
           )

@@ -1,6 +1,7 @@
 import 'package:pay_split/models/UserModel.dart';
 
 class Group {
+  String groupId = "";
   String groupName = "";
   int numberOfmembers = 0;
   late DateTime groupCreatedAt;
@@ -14,6 +15,7 @@ class Group {
   static Group getGroupDataFromDocumentSnapshotMap(groupDataFromFirestore) {
     Group group = Group.makeObject();
 
+    group.groupId = groupDataFromFirestore.id;
     group.groupName = groupDataFromFirestore["groupName"];
     group.admin = groupDataFromFirestore["admin"];
     group.groupCreatedAt = groupDataFromFirestore["groupCreatedAt"].toDate();
