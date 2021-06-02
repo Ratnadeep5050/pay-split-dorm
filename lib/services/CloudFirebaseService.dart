@@ -52,4 +52,14 @@ class CloudFirebaseService {
     return await _ref.collection("users").doc(userId).get();
   }
 
+  Future<void> addMemberToSpecificGroup(String groupId, UserModel user) async {
+    return _ref.collection("groups").doc(groupId).update({
+      "groupMembers": FieldValue.arrayUnion([user.uid]),
+    });
+  }
+
+  Future getSpecificGroup(String groupId) async {
+    return await _ref.collection("groups").doc(groupId).get();
+  }
+
 }

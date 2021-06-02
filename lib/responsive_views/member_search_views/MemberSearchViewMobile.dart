@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:pay_split/models/Group.dart';
 import 'package:pay_split/models/UserModel.dart';
+import 'package:pay_split/services/CloudFirebaseService.dart';
+import 'package:provider/provider.dart';
 
 class MemberSearchViewMobile extends StatefulWidget {
   Group group;
@@ -31,6 +33,8 @@ class _MemberSearchViewMobileState extends State<MemberSearchViewMobile> {
 
   @override
   Widget build(BuildContext context) {
+    final cloudFirebaseService = Provider.of<CloudFirebaseService>(context);
+
     return SafeArea(
       child: Scaffold(
         body: Container(
@@ -89,37 +93,53 @@ class _MemberSearchViewMobileState extends State<MemberSearchViewMobile> {
                       if(snapshot.hasData) {
                         QuerySnapshot users = snapshot.data;
 
-                        _user = UserModel.getUserDataFromDocumentSnapshotList(users.docs, phoneNumber);
+                        _user = UserModel.getUserDataFromDocumentSnapshotListPhoneNumbers(users.docs, phoneNumber);
 
                         return Container(
                           padding: EdgeInsets.all(5),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                          child: Card(
+                            elevation: 3,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Container(
-                                  child: Text(
-                                    _user.username,
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 20
-                                    ),
-                                  ),
-                                ),
-                                Container(
-                                  child: Text(
-                                    _user.phoneNumber,
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 12,
-                                        fontStyle: FontStyle.italic,
-                                        color: Colors.black54
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                      padding: EdgeInsets.all(2),
+                                      child: Text(
+                                        _user.username,
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 20
+                                        ),
                                       ),
-                                  ),
-                                )
+                                    ),
+                                    Container(
+                                      padding: EdgeInsets.all(2),
+                                      child: Text(
+                                        _user.phoneNumber,
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 12,
+                                            fontStyle: FontStyle.italic,
+                                            color: Colors.black54
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                                IconButton(
+                                  icon: Icon(Icons.add),
+                                  onPressed: () async {
+                                    await cloudFirebaseService.addMemberToSpecificGroup(group.groupId, _user);
+                                  },
+                                ),
                               ],
                             )
-                          );
+                          )
+                        );
                       }
                       else {
                         return Center(

@@ -43,7 +43,18 @@ class UserModel {
 
   }
 
-  static UserModel getUserDataFromDocumentSnapshotList(List userDataFromFirestore, String phoneNumber) {
+  static List<UserModel> getUserDataFromDocumentSnapshotList(List userDataFromFirestore) {
+    List<UserModel> userList = [];
+
+    for(var u in userDataFromFirestore) {
+      UserModel user = UserModel.getGroupDataFromDocumentSnapshotMap(u);
+      userList.add(user);
+    }
+
+    return userList;
+  }
+
+  static UserModel getUserDataFromDocumentSnapshotListPhoneNumbers(List userDataFromFirestore, String phoneNumber) {
     UserModel user = UserModel.makeObject();
 
     for(var u in userDataFromFirestore) {
