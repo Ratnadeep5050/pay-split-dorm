@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:pay_split/RouteNames.dart';
+import 'package:pay_split/services/CloudFirebaseService.dart';
 import 'package:pay_split/viewmodels/DrawerModel.dart';
 import 'package:pay_split/models/Group.dart';
 import 'package:pay_split/viewmodels/GroupsListViewModel.dart';
@@ -20,6 +21,7 @@ class _UserCreatedGroupsViewMobileState extends State<UserCreatedGroupsViewMobil
   @override
   Widget build(BuildContext context) {
     final groupsListViewModel = Provider.of<GroupsListViewModel>(context);
+    final cloudFirebaseService = Provider.of<CloudFirebaseService>(context);
 
     return SafeArea(
       child: Scaffold(
@@ -50,7 +52,7 @@ class _UserCreatedGroupsViewMobileState extends State<UserCreatedGroupsViewMobil
                   physics: ClampingScrollPhysics(),
                   children: [
                     StreamBuilder(
-                      stream: FirebaseFirestore.instance.collection("groups").snapshots(),
+                      stream: FirebaseFirestore.instance.collection("groups").where("groupCreatedBy", isEqualTo: cloudFirebaseService.userModel.uid).snapshots(),
                       builder: (BuildContext context, AsyncSnapshot snapshot) {
                         if(snapshot.hasData) {
                           QuerySnapshot groups = snapshot.data;

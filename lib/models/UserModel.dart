@@ -29,6 +29,19 @@ class UserModel {
 
   UserModel.makeObject();
 
+  static UserModel fromMapToObject(userDataFromFirestore) {
+    UserModel user = UserModel.makeObject();
+
+    user.uid = userDataFromFirestore.id;
+    user.username = userDataFromFirestore["username"];
+    user.password = userDataFromFirestore["password"];
+    user.phoneNumber = userDataFromFirestore["phoneNumber"];
+    user.userCreatedGroups = userDataFromFirestore["groupsCreadted"];
+    user.groupsUserAddedTo = userDataFromFirestore["groupsUserAddedTo"];
+
+    return user;
+  }
+
   static UserModel getGroupDataFromDocumentSnapshotMap(userDataFromFirestore) {
     UserModel user = UserModel.makeObject();
 

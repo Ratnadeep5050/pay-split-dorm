@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:pay_split/models/Group.dart';
 import 'package:pay_split/models/UserModel.dart';
 import 'package:pay_split/services/CloudFirebaseService.dart';
@@ -32,11 +33,12 @@ class _MembersListViewMobileState extends State<MembersListViewMobile> {
             builder: (BuildContext context, AsyncSnapshot snapshot) {
               if(snapshot.hasData) {
 
-                getUsersById(snapshot, cloudFirebaseService);
+                getUsersById(snapshot.data["groupMembers"], cloudFirebaseService);
 
                 return ListView.builder(
-                  itemCount: userList.length,
+                  itemCount: group.groupMembers.length,
                   itemBuilder: (BuildContext context, index) {
+                    print(index);
                     return _getMemberCard(index);
                   },
                 );
@@ -48,60 +50,13 @@ class _MembersListViewMobileState extends State<MembersListViewMobile> {
               }
             },
           ),
-          /*
-          ListView.builder(
-            itemCount: group.groupMembers.length,
-            itemBuilder: (BuildContext context, index) {
-              UserModel user = group.groupMembers[index];
-              return Container(
-                child: Card (
-                  elevation: 4,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Container(
-                          padding: EdgeInsets.all(5),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                child: Text(
-                                  user.username,
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 20
-                                  ),
-                                ),
-                              ),
-                              Container(
-                                child: Text(
-                                  user.phoneNumber,
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 12,
-                                      fontStyle: FontStyle.italic,
-                                      color: Colors.black54
-                                  ),
-                                ),
-                              )
-                            ],
-                          )
-                      ),
-                      Container()
-                    ],
-                  ),
-                )
-              );
-            },
-          ),
-        */
         ),
       ),
     );
   }
 
   Widget _getMemberCard(int index) {
+    print(index);
     UserModel user = userList[index];
 
     return Container(
@@ -116,6 +71,7 @@ class _MembersListViewMobileState extends State<MembersListViewMobile> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
+                      margin: EdgeInsets.fromLTRB(5, 5, 5, 2),
                       padding: EdgeInsets.all(2),
                       child: Text(
                         user.username,
@@ -126,6 +82,7 @@ class _MembersListViewMobileState extends State<MembersListViewMobile> {
                       ),
                     ),
                     Container(
+                      margin: EdgeInsets.fromLTRB(5, 2, 5, 5),
                       padding: EdgeInsets.all(2),
                       child: Text(
                         user.phoneNumber,
@@ -147,9 +104,14 @@ class _MembersListViewMobileState extends State<MembersListViewMobile> {
   }
 
   getUsersById(snapshot, cloudFirebaseService) async {
-    for(int i=0; i<2; i++) {
-      var user = await cloudFirebaseService.getUserById(snapshot.data["groupMembers"][i]);
-      print("Here is user: $user");
+    for(int i=0; i<group.groupMembers.length; i++) {
+      var result = await cloudFirebaseService.getUserById(snapshot[i]);
+      UserModel user = UserModel.fromMapToObject(result);
+      addUsersToList(user);
     }
+  }
+
+  addUsersToList(UserModel user) {
+    userList.add(user);
   }
 }

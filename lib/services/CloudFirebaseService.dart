@@ -27,14 +27,36 @@ class CloudFirebaseService {
     return _ref.collection("users").doc(userId).set(userModel.toJson());
   }
 
-  Future<void> addGroupToFirestore(Group group) {
-    return _ref.collection("groups").add({
+  addGroupToFirestore(Group group) {
+    _ref.collection("groups").add({
       "admin": userModel.uid,
       "groupCreatedAt": DateTime.now(),
       "groupCreatedBy": userModel.uid,
       "groupMembers": [],
       "groupName": group.groupName,
     });
+
+    getGroupsCreatedByUser(userModel.uid);
+  }
+
+  getGroupsCreatedByUser(String userId) {
+    return _ref.collection("groups")
+        .where("groupCreatedBy", isEqualTo: userId)
+        .get()
+        .then((groups) {
+          addGroupsCreatedByUserToUserModel(groups.docs);
+        });
+  }
+
+  addGroupsCreatedByUserToUserModel(groups) {
+    for(var g in groups) {
+      userModel.userCreatedGroups.add(g.id);
+    }
+    updateUserDataToFireStore(userModel, userModel.uid);
+  }
+
+  Future<void> updateUserDataToFireStore(UserModel userModel, String userId) {
+    return _ref.collection("users").doc(userId).set(userModel.toJson());
   }
 
   Future<void> addItemToFirestore(Item item) {
