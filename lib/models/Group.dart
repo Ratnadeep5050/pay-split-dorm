@@ -12,6 +12,19 @@ class Group {
   Group.makeObject();
   Group(this.groupName);
 
+  static Group fromMapToObject(userDataFromFirestore) {
+    Group group = Group.makeObject();
+
+    group.groupId = userDataFromFirestore.id;
+    group.groupName = userDataFromFirestore["groupName"];
+    group.admin = userDataFromFirestore["admin"];
+    group.groupCreatedAt = userDataFromFirestore["groupCreatedAt"].toDate();
+    group.groupCreatorID = userDataFromFirestore["groupCreatedBy"];
+    group.groupMembers = userDataFromFirestore["groupMembers"];
+
+    return group;
+  }
+
   static Group getGroupDataFromDocumentSnapshotMap(groupDataFromFirestore) {
     Group group = Group.makeObject();
 

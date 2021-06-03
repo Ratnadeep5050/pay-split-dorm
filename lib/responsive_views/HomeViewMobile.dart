@@ -64,7 +64,7 @@ class _HomeViewMobileState extends State<HomeViewMobile> {
                     ),
                   ),
                   onPressed: () {
-
+                    Navigator.pushNamed(context, userAddedGroupsView);
                   },
                 ),
               ),

@@ -50,9 +50,9 @@ class CloudFirebaseService {
 
   addGroupsCreatedByUserToUserModel(groups) {
     for(var g in groups) {
-      userModel.userCreatedGroups.add(g.id);
+      activeUser.userCreatedGroups.add(g.id);
     }
-    updateUserDataToFireStore(userModel, userModel.uid);
+    updateUserDataToFireStore(activeUser, userModel.uid);
   }
 
   Future<void> updateUserDataToFireStore(UserModel userModel, String userId) {
@@ -74,10 +74,27 @@ class CloudFirebaseService {
     return await _ref.collection("users").doc(userId).get();
   }
 
-  Future<void> addMemberToSpecificGroup(String groupId, UserModel user) async {
-    return _ref.collection("groups").doc(groupId).update({
+  Future getGroupById(String userId) async {
+    return await _ref.collection("groups").doc(userId).get();
+  }
+
+  addMemberToSpecificGroup(String groupId, UserModel user) async {
+    _ref.collection("groups").doc(groupId).update({
       "groupMembers": FieldValue.arrayUnion([user.uid]),
     });
+
+    addGroupIdUserAddedToUserModel(user.uid, groupId);
+  }
+
+  addGroupIdUserAddedToUserModel(String userId, String groupId) {
+    _ref.collection("users")
+        .doc(userId)
+        .get()
+        .then((user) {
+          _ref.collection("users").doc(user.id).update({
+            "groupsUserAddedTo": FieldValue.arrayUnion([groupId])
+          });
+        });
   }
 
   Future getSpecificGroup(String groupId) async {

@@ -1,5 +1,6 @@
 import 'package:pay_split/RouteNames.dart';
 import 'package:pay_split/models/Group.dart';
+import 'package:pay_split/responsive_views/groups_list/UserAddedGroupsViewMobile.dart';
 import 'package:pay_split/responsive_views/member_search_views/MemberSearchViewMobile.dart';
 import 'package:pay_split/views/ItemListView.dart';
 import 'package:pay_split/views/MemberSearchView.dart';
@@ -18,6 +19,8 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => MyApp());
       case userCreatedGroupsView:
         return MaterialPageRoute(builder: (_) => UserCreatedGroupsView());
+      case userAddedGroupsView:
+        return MaterialPageRoute(builder: (_) => UserAddedGroupsViewMobile());
       case itemListView:
         var group = settings.arguments as Group;
         return MaterialPageRoute(builder: (_) => ItemListView(group));
