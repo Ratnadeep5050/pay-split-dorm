@@ -23,6 +23,7 @@ class Item{
     item.itemPrice = itemDataFromFirestore["itemPrice"];
     item.itemBoughtAt = itemDataFromFirestore["itemBoughtAt"].toDate();
     item.itemBoughtById = itemDataFromFirestore["itemBoughtBy"];
+    item.itemGroupId = itemDataFromFirestore["itemBelongsToGroup"];
 
     return item;
   }

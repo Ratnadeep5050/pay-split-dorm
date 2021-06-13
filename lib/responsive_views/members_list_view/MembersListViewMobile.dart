@@ -32,14 +32,22 @@ class _MembersListViewMobileState extends State<MembersListViewMobile> {
             stream: FirebaseFirestore.instance.collection("groups").doc(group.groupId).snapshots(),
             builder: (BuildContext context, AsyncSnapshot snapshot) {
               if(snapshot.hasData) {
-
-                getUsersById(snapshot.data["groupMembers"], cloudFirebaseService);
-
-                return ListView.builder(
-                  itemCount: group.groupMembers.length,
-                  itemBuilder: (BuildContext context, index) {
-                    print(index);
-                    return _getMemberCard(index);
+                return FutureBuilder(
+                  future: getUsersById(snapshot.data["groupMembers"], cloudFirebaseService),
+                  builder: (context, snapShot) {
+                    if(snapShot.hasData) {
+                      return ListView.builder(
+                        itemCount: group.groupMembers.length,
+                        itemBuilder: (BuildContext context, index) {
+                          return _getMemberCard(index);
+                        },
+                      );
+                    }
+                    else {
+                      return Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
                   },
                 );
               }
@@ -56,7 +64,6 @@ class _MembersListViewMobileState extends State<MembersListViewMobile> {
   }
 
   Widget _getMemberCard(int index) {
-    print(index);
     UserModel user = userList[index];
 
     return Container(
@@ -104,11 +111,15 @@ class _MembersListViewMobileState extends State<MembersListViewMobile> {
   }
 
   getUsersById(snapshot, cloudFirebaseService) async {
+    await Future.delayed(Duration(seconds: 1));
+
     for(int i=0; i<group.groupMembers.length; i++) {
       var result = await cloudFirebaseService.getUserById(snapshot[i]);
       UserModel user = UserModel.fromMapToObject(result);
       addUsersToList(user);
     }
+
+    return 1;
   }
 
   addUsersToList(UserModel user) {

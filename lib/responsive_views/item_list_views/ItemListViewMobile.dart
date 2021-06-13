@@ -26,6 +26,9 @@ class _ItemListViewMobileState extends State<ItemListViewMobile> {
   @override
   Widget build(BuildContext context) {
     final itemListViewModel = Provider.of<ItemsListViewModel>(context);
+    final groupViewModel = Provider.of<GroupsListViewModel>(context);
+
+    groupViewModel.currentGroup = group;
 
     return SafeArea(
       child: Scaffold(
@@ -215,6 +218,8 @@ class _ItemListViewMobileState extends State<ItemListViewMobile> {
   Widget _getItemCard(int index) {
     Item item = itemList[index];
 
+    //print(item);
+
     return GestureDetector(
       child: Card(
         elevation: 3,
@@ -245,7 +250,7 @@ class _ItemListViewMobileState extends State<ItemListViewMobile> {
         ),
       ),
       onTap: () {
-        //Navigator.pushNamed(context, itemListView, arguments: groupList[index]);
+        Navigator.pushNamed(context, itemDetailsView, arguments: item);
       },
     );
   }

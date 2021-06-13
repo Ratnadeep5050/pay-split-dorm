@@ -51,7 +51,7 @@ class _MyAppState extends State<MyApp> {
             create: (_) => AuthenticationViewModel()
         ),
         Provider<AuthenticationService>(
-            create: (_) => AuthenticationService(FirebaseAuth.instance)
+            create: (_) => AuthenticationService()
         ),
       ],
       child: MaterialApp(

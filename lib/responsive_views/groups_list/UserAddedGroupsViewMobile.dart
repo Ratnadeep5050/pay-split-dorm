@@ -59,17 +59,25 @@ class _UserAddedGroupsViewMobileState extends State<UserAddedGroupsViewMobile> {
                           .snapshots(),
                       builder: (BuildContext context, AsyncSnapshot snapshot) {
                         if(snapshot.hasData) {
-                          print(snapshot.data);
-
                           UserModel userModel = UserModel.fromMapToObject(snapshot.data);
-
-                          getGroupsById(userModel, cloudFirebaseService);
-
-                          return ListView.builder(
-                            shrinkWrap: true,
-                            itemCount: userModel.groupsUserAddedTo.length,
-                            itemBuilder: (BuildContext context, index) {
-                              return _getGroupCard(index);
+                          
+                          return FutureBuilder(
+                            future: getGroupsById(userModel, cloudFirebaseService),
+                            builder: (context, snapShot) {
+                              if(snapShot.hasData) {
+                                return ListView.builder(
+                                  shrinkWrap: true,
+                                  itemCount: userModel.groupsUserAddedTo.length,
+                                  itemBuilder: (BuildContext context, index) {
+                                    return _getGroupCard(index);
+                                  },
+                                );
+                              }
+                              else {
+                                return Center(
+                                    child: CircularProgressIndicator()
+                                );
+                              }
                             },
                           );
                         }
@@ -110,10 +118,14 @@ class _UserAddedGroupsViewMobileState extends State<UserAddedGroupsViewMobile> {
   }
 
   getGroupsById(UserModel userModel, cloudFirebaseService) async {
+    await Future.delayed(Duration(seconds: 1));
+
     for(int i=0; i<userModel.groupsUserAddedTo.length; i++) {
       var result = await cloudFirebaseService.getGroupById(userModel.groupsUserAddedTo[i]);
       Group group = Group.fromMapToObject(result);
       groupList.add(group);
     }
+
+    return 1;
   }
 }

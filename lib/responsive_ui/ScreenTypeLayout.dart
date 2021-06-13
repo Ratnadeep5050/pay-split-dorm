@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:pay_split/RouteNames.dart';
 import 'package:pay_split/responsive_ui/ResponsiveBuilder.dart';
 import 'package:pay_split/services/AuthenticationService.dart';
 import 'package:pay_split/services/CloudFirebaseService.dart';
@@ -45,8 +46,6 @@ class _ScreenTypeLayoutState extends State<ScreenTypeLayout> {
     final cloudFirebaseService = Provider.of<CloudFirebaseService>(context);
 
     cloudFirebaseService.getUserDataFromFirestore();
-
-    //print("Username: ${cloudFirebaseService.activeUser.username}");
 
     return Scaffold(
         body: Stack(
@@ -103,7 +102,7 @@ class _ScreenTypeLayoutState extends State<ScreenTypeLayout> {
                             color: Colors.white,
                           ),
                           onTap: () {
-
+                            Navigator.pushNamed(context, homeRoute);
                           },
                         ),
                         ListTile(
@@ -148,6 +147,7 @@ class _ScreenTypeLayoutState extends State<ScreenTypeLayout> {
                             color: Colors.white,
                           ),
                           onTap: () {
+                            cloudFirebaseService.activeUser.username = "";
                             context.read<AuthenticationService>().signOut();
                           },
                         ),
@@ -177,8 +177,9 @@ class _ScreenTypeLayoutState extends State<ScreenTypeLayout> {
                             color: Colors.white,
                           ),
                           onPressed: () {
+                            drawerModel.drawerToggle();
                             setState(() {
-                              drawerModel.drawerToggle();
+
                             });
                           },
                         ),

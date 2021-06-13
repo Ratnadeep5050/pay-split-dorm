@@ -7,6 +7,8 @@ class GroupsListViewModel {
 
   StreamController<GroupsListViewModel> streamController = StreamController.broadcast();
 
+  Group currentGroup = Group.makeObject();
+
   List<Group> groupList = [];
 
   addGroup(String groupName) {
