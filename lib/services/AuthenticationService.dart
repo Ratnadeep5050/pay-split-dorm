@@ -4,9 +4,9 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:pay_split/models/UserModel.dart';
 
 class AuthenticationService {
-  FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseAuth _auth;
 
-  AuthenticationService();
+  AuthenticationService(this._auth);
 
   Future<String> signUp(String email, String password) async {
     print("Email $email Password $password");

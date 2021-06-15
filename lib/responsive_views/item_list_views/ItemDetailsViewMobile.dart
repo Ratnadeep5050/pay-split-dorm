@@ -21,6 +21,7 @@ class _ItemDetailsViewMobileState extends State<ItemDetailsViewMobile> {
   Item item;
   late Group group;
   List<UserModel> userList = [];
+  Map<String, String> itemPaymentStatus = {};
 
   _ItemDetailsViewMobileState(this.item);
 
@@ -89,6 +90,7 @@ class _ItemDetailsViewMobileState extends State<ItemDetailsViewMobile> {
                             shrinkWrap: true,
                             itemCount: group.groupMembers.length,
                             itemBuilder: (BuildContext context, index) {
+                              print(itemPaymentStatus);
                               return _getMemberCard(index);
                             },
                           );
@@ -157,7 +159,18 @@ class _ItemDetailsViewMobileState extends State<ItemDetailsViewMobile> {
                     )
                   ],
                 ),
-                Container(),
+                Container(
+                  margin: EdgeInsets.fromLTRB(5, 2, 5, 5),
+                  child: Text(
+                    itemPaymentStatus[user.phoneNumber].toString(),
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12,
+                        fontStyle: FontStyle.italic,
+                        color: Colors.black54
+                    ),
+                  ),
+                ),
               ],
             )
         )
@@ -171,9 +184,19 @@ class _ItemDetailsViewMobileState extends State<ItemDetailsViewMobile> {
       var result = await cloudFirebaseService.getUserById(snapshot[i]);
       UserModel user = UserModel.fromMapToObject(result);
       addUsersToList(user);
+      dividePaymentAmongMembers(item, group, user);
     }
 
     return 1;
+  }
+
+  dividePaymentAmongMembers(Item item, Group group, UserModel userModel) {
+    double price = double.parse(item.itemPrice);
+    double priceToPayByEachMember = price/group.groupMembers.length;
+
+    print(priceToPayByEachMember);
+
+    itemPaymentStatus.putIfAbsent(userModel.phoneNumber, () => priceToPayByEachMember.toString());
   }
 
   addUsersToList(UserModel user) {

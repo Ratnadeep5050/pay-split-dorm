@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:pay_split/models/Group.dart';
 import 'package:pay_split/models/UserModel.dart';
+import 'package:pay_split/services/CloudFirebaseService.dart';
 
 class Item{
   String itemId = "";
@@ -10,6 +12,7 @@ class Item{
   late String itemGroupId;
   int itemPaymentState = 0;
   List itemPricePaymentStatusByMembers = [];
+  Map<String, String> itemPaymentStatusByMembers = {};
 
   Item.makeObject();
 
@@ -39,5 +42,19 @@ class Item{
     }
 
     return itemList;
-  }  
+  }
+
+  /*
+  static Map<String, String> dividedPaymentIntoMembers(Item item, Group group) {
+    double price = double.parse(item.itemPrice);
+    double priceToPayByEachMember = price/group.groupMembers.length;
+
+    for(var m in group.groupMembers) {
+      UserModel userModel = UserModel.fromMapToObject(m);
+      item.itemPaymentStatusByMembers.update(userModel.phoneNumber, (value) => priceToPayByEachMember.toString());
+    }
+
+    return item.itemPaymentStatusByMembers;
+  }
+  */
 }
