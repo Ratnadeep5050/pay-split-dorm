@@ -44,6 +44,11 @@ class Item{
     return itemList;
   }
 
+  toJson() {
+    return {
+      "userName": itemPaymentStatusByMembers[""],
+    };
+  }
   /*
   static Map<String, String> dividedPaymentIntoMembers(Item item, Group group) {
     double price = double.parse(item.itemPrice);

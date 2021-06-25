@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:pay_split/RouteNames.dart';
 import 'package:pay_split/models/Group.dart';
@@ -22,6 +23,8 @@ class _ItemDetailsViewMobileState extends State<ItemDetailsViewMobile> {
   late Group group;
   List<UserModel> userList = [];
   Map<String, String> itemPaymentStatus = {};
+  double paymentAmount = 0.0;
+  double paidAmount = 0.0;
 
   _ItemDetailsViewMobileState(this.item);
 
@@ -54,7 +57,7 @@ class _ItemDetailsViewMobileState extends State<ItemDetailsViewMobile> {
                         ),
                         Container(
                           child: Text(
-                            item.itemPrice.toString(),
+                            "${paidAmount}/${item.itemPrice}",
                             textAlign: TextAlign.center,
                           ),
                         ),
@@ -91,7 +94,7 @@ class _ItemDetailsViewMobileState extends State<ItemDetailsViewMobile> {
                             itemCount: group.groupMembers.length,
                             itemBuilder: (BuildContext context, index) {
                               print(itemPaymentStatus);
-                              return _getMemberCard(index);
+                              return _getMemberCard(index, cloudFirebaseService);
                             },
                           );
                         }
@@ -117,10 +120,8 @@ class _ItemDetailsViewMobileState extends State<ItemDetailsViewMobile> {
     );
   }
 
-  Widget _getMemberCard(int index) {
+  Widget _getMemberCard(int index, cloudFirebaseService) {
     UserModel user = userList[index];
-
-    print(user.username);
 
     return Container(
         padding: EdgeInsets.all(5),
@@ -159,17 +160,45 @@ class _ItemDetailsViewMobileState extends State<ItemDetailsViewMobile> {
                     )
                   ],
                 ),
-                Container(
-                  margin: EdgeInsets.fromLTRB(5, 2, 5, 5),
-                  child: Text(
-                    itemPaymentStatus[user.phoneNumber].toString(),
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 12,
-                        fontStyle: FontStyle.italic,
-                        color: Colors.black54
+                Column(
+                  children: [
+                    Container(
+                      margin: EdgeInsets.fromLTRB(5, 2, 5, 5),
+                      child: Text(
+                        itemPaymentStatus[user.phoneNumber].toString(),
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 12,
+                            fontStyle: FontStyle.italic,
+                            color: Colors.black54
+                        ),
+                      ),
                     ),
-                  ),
+                    cloudFirebaseService.activeUser.phoneNumber == user.phoneNumber ? Container(
+                      margin: EdgeInsets.fromLTRB(5, 2, 5, 5),
+                      child: TextButton(
+                        child: Text(
+                          "Pay",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12,
+                              fontStyle: FontStyle.italic,
+                              color: Colors.black54
+                          ),
+                        ),
+                        onPressed: () {
+                          setState(() {
+
+                          });
+                          updatePaymentStatus(item, user, cloudFirebaseService);
+                        },
+                      ),
+                    )
+                        :
+                    Container(
+                      color: Colors.black,
+                    ),
+                  ],
                 ),
               ],
             )
@@ -184,22 +213,94 @@ class _ItemDetailsViewMobileState extends State<ItemDetailsViewMobile> {
       var result = await cloudFirebaseService.getUserById(snapshot[i]);
       UserModel user = UserModel.fromMapToObject(result);
       addUsersToList(user);
-      dividePaymentAmongMembers(item, group, user);
+      dividePaymentAmongMembers(item, group, user, cloudFirebaseService);
     }
 
     return 1;
   }
 
-  dividePaymentAmongMembers(Item item, Group group, UserModel userModel) {
+  dividePaymentAmongMembers(Item item, Group group, UserModel userModel, cloudFirebaseService) async {
     double price = double.parse(item.itemPrice);
     double priceToPayByEachMember = price/group.groupMembers.length;
 
-    print(priceToPayByEachMember);
-
     itemPaymentStatus.putIfAbsent(userModel.phoneNumber, () => priceToPayByEachMember.toString());
+    updatePaymentStatus(item, userModel, cloudFirebaseService);
+
+    //itemPaymentStatus = await cloudFirebaseService.getPaymentStatus(item);
+  }
+
+  updatePaymentStatus(Item item, UserModel userModel, cloudFirebaseService) async {
+    double price = double.parse(item.itemPrice);
+    double priceToPayByEachMember = price/group.groupMembers.length;
+
+    paidAmount += priceToPayByEachMember;
+
+    itemPaymentStatus.putIfAbsent(userModel.phoneNumber, () => "0");
+    await cloudFirebaseService.updateItemPaymentStatus(item, userModel, itemPaymentStatus, priceToPayByEachMember);
+
+    //itemPaymentStatus = await cloudFirebaseService.getPaymentStatus(item);
   }
 
   addUsersToList(UserModel user) {
     userList.add(user);
+  }
+
+  _showGroupNameForm(BuildContext context, homeViewModel) {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            content: Container(
+                height: 130,
+                width: 150,
+                alignment: Alignment.center,
+                child: Column(
+                  children: [
+                    Container(
+                      width: 150,
+                      alignment: Alignment.center,
+                      child: TextField(
+                        cursorColor: Colors.blue,
+                        style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black
+                        ),
+                        decoration: InputDecoration(
+                          labelText: "Enter Group Name",
+                          labelStyle: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black
+                          ),
+                        ),
+                        onChanged: (text) {
+                          paymentAmount = double.parse(text);
+                        },
+                      ),
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    TextButton(
+                      onPressed: () async {
+
+                      },
+                      child: Text(
+                        "Create",
+                        style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 20,
+                            color: Colors.black,
+                            fontFamily: "matrixFont"
+                        ),
+                      ),
+                    )
+                  ],
+                )
+            ),
+          );
+        }
+    );
   }
 }

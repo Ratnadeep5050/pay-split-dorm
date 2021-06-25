@@ -97,6 +97,34 @@ class CloudFirebaseService {
         });
   }
 
+
+  updateItemPaymentStatus(Item item, UserModel userModel,  Map<String, String> itemPaymentByMember, double priceToPayByEachUser) {
+    _ref.collection("items")
+        .doc(item.itemId)
+        .get()
+        .then((user) {
+          print(itemPaymentByMember);
+      _ref.collection("items").doc(item.itemId).update({
+        "itemPaymentStatusByMembers": {
+          "${userModel.phoneNumber}": "${priceToPayByEachUser}"
+        }
+      });
+    });
+  }
+
+  Future getPaymentStatus(Item item) async {
+    Map<String, String> itemPaymentStatus = {};
+
+    await _ref.collection("items")
+        .doc(item.itemId)
+        .get()
+        .then((item) {
+          itemPaymentStatus = item["itemPaymentStatusByMembers"];
+        });
+
+    return itemPaymentStatus;
+  }
+
   Future getSpecificGroup(String groupId) async {
     return await _ref.collection("groups").doc(groupId).get();
   }
