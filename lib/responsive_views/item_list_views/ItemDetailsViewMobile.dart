@@ -25,6 +25,7 @@ class _ItemDetailsViewMobileState extends State<ItemDetailsViewMobile> {
   Map<String, String> itemPaymentStatus = {};
   double paymentAmount = 0.0;
   double paidAmount = 0.0;
+  List<Map<String, String>> paymentStatusBymembers = [];
 
   _ItemDetailsViewMobileState(this.item);
 
@@ -88,12 +89,12 @@ class _ItemDetailsViewMobileState extends State<ItemDetailsViewMobile> {
                     return FutureBuilder(
                       future: getUsersById(snapshot.data["groupMembers"], cloudFirebaseService),
                       builder: (context, snapShot) {
+                        dividePaymentAmongMembers(item, group, cloudFirebaseService);
                         if(snapShot.hasData) {
                           return ListView.builder(
                             shrinkWrap: true,
                             itemCount: group.groupMembers.length,
                             itemBuilder: (BuildContext context, index) {
-                              print(itemPaymentStatus);
                               return _getMemberCard(index, cloudFirebaseService);
                             },
                           );
@@ -213,18 +214,20 @@ class _ItemDetailsViewMobileState extends State<ItemDetailsViewMobile> {
       var result = await cloudFirebaseService.getUserById(snapshot[i]);
       UserModel user = UserModel.fromMapToObject(result);
       addUsersToList(user);
-      dividePaymentAmongMembers(item, group, user, cloudFirebaseService);
     }
 
     return 1;
   }
 
-  dividePaymentAmongMembers(Item item, Group group, UserModel userModel, cloudFirebaseService) async {
+  dividePaymentAmongMembers(Item item, Group group, cloudFirebaseService) async {
     double price = double.parse(item.itemPrice);
     double priceToPayByEachMember = price/group.groupMembers.length;
 
-    itemPaymentStatus.putIfAbsent(userModel.phoneNumber, () => priceToPayByEachMember.toString());
-    updatePaymentStatus(item, userModel, cloudFirebaseService);
+    for(var u in userList) {
+      itemPaymentStatus[u.phoneNumber] = priceToPayByEachMember.toString();
+    }
+    //paymentStatusBymembers.add(itemPaymentStatus);
+    //updatePaymentStatus(item, userModel, cloudFirebaseService);
 
     //itemPaymentStatus = await cloudFirebaseService.getPaymentStatus(item);
   }
@@ -233,10 +236,15 @@ class _ItemDetailsViewMobileState extends State<ItemDetailsViewMobile> {
     double price = double.parse(item.itemPrice);
     double priceToPayByEachMember = price/group.groupMembers.length;
 
-    paidAmount += priceToPayByEachMember;
+    print("Price to pay per member $priceToPayByEachMember");
+    print("Paid amount $paidAmount");
 
-    itemPaymentStatus.putIfAbsent(userModel.phoneNumber, () => "0");
-    await cloudFirebaseService.updateItemPaymentStatus(item, userModel, itemPaymentStatus, priceToPayByEachMember);
+    if(paidAmount == 0) {
+      paidAmount += priceToPayByEachMember;
+    }
+
+    itemPaymentStatus.update(userModel.phoneNumber, (value) => "0");
+    await cloudFirebaseService.updateItemPaymentStatus(item, userModel, paymentStatusBymembers, priceToPayByEachMember);
 
     //itemPaymentStatus = await cloudFirebaseService.getPaymentStatus(item);
   }
