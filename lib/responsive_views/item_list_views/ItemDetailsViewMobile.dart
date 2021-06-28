@@ -7,6 +7,7 @@ import 'package:pay_split/models/Item.dart';
 import 'package:pay_split/models/UserModel.dart';
 import 'package:pay_split/services/CloudFirebaseService.dart';
 import 'package:pay_split/viewmodels/GroupsListViewModel.dart';
+import 'package:pay_split/viewmodels/PaymentViewModel.dart';
 import 'package:provider/provider.dart';
 
 class ItemDetailsViewMobile extends StatefulWidget {
@@ -33,6 +34,7 @@ class _ItemDetailsViewMobileState extends State<ItemDetailsViewMobile> {
   Widget build(BuildContext context) {
     final cloudFirebaseService = Provider.of<CloudFirebaseService>(context);
     final groupViewModel = Provider.of<GroupsListViewModel>(context);
+    final paymentViewModel = Provider.of<PaymentViewModel>(context);
 
     group = groupViewModel.currentGroup;
 
@@ -58,7 +60,7 @@ class _ItemDetailsViewMobileState extends State<ItemDetailsViewMobile> {
                         ),
                         Container(
                           child: Text(
-                            "${paidAmount}/${item.itemPrice}",
+                            "${item.itemPricePaid}/${item.itemPrice}",
                             textAlign: TextAlign.center,
                           ),
                         ),
@@ -87,15 +89,15 @@ class _ItemDetailsViewMobileState extends State<ItemDetailsViewMobile> {
                 builder: (BuildContext context, AsyncSnapshot snapshot) {
                   if(snapshot.hasData) {
                     return FutureBuilder(
-                      future: getUsersById(snapshot.data["groupMembers"], cloudFirebaseService),
+                      future: getUsersById(snapshot.data["groupMembers"], cloudFirebaseService, paymentViewModel),
                       builder: (context, snapShot) {
-                        dividePaymentAmongMembers(item, group, cloudFirebaseService);
+                        paymentViewModel.dividePaymentAmongMembers(item, group, cloudFirebaseService);
                         if(snapShot.hasData) {
                           return ListView.builder(
                             shrinkWrap: true,
                             itemCount: group.groupMembers.length,
                             itemBuilder: (BuildContext context, index) {
-                              return _getMemberCard(index, cloudFirebaseService);
+                              return _getMemberCard(index, cloudFirebaseService, paymentViewModel);
                             },
                           );
                         }
@@ -121,8 +123,10 @@ class _ItemDetailsViewMobileState extends State<ItemDetailsViewMobile> {
     );
   }
 
-  Widget _getMemberCard(int index, cloudFirebaseService) {
-    UserModel user = userList[index];
+  Widget _getMemberCard(int index, cloudFirebaseService, paymentViewModel) {
+    UserModel user = paymentViewModel.userList[index];
+
+    //print(user.username);
 
     return Container(
         padding: EdgeInsets.all(5),
@@ -166,7 +170,7 @@ class _ItemDetailsViewMobileState extends State<ItemDetailsViewMobile> {
                     Container(
                       margin: EdgeInsets.fromLTRB(5, 2, 5, 5),
                       child: Text(
-                        itemPaymentStatus[user.phoneNumber].toString(),
+                        paymentViewModel.itemModel.itemPaymentStatusByMembers[user.phoneNumber].toString(),
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 12,
@@ -187,11 +191,24 @@ class _ItemDetailsViewMobileState extends State<ItemDetailsViewMobile> {
                               color: Colors.black54
                           ),
                         ),
-                        onPressed: () {
-                          setState(() {
+                        onPressed: () async {
+                          /*
+                          for(var u in paymentViewModel.userList) {
+                            print("Before payment ${u.phoneNumber} => ${paymentViewModel.itemModel.itemPaymentStatusByMembers[u.phoneNumber]}");
+                          }
 
-                          });
-                          updatePaymentStatus(item, user, cloudFirebaseService);
+                           */
+
+                          //print(paymentViewModel.itemModel.itemPaymentStatusByMembers[user.phoneNumber]);
+                          if(paymentViewModel.itemModel.itemPaymentStatusByMembers[user.phoneNumber] != "0") {
+                            await paymentViewModel.updatePaymentStatus(item, user, cloudFirebaseService);
+                          }
+                          /*
+                          for(var u in paymentViewModel.userList) {
+                            print("After payment ${u.phoneNumber} => ${paymentViewModel.itemModel.itemPaymentStatusByMembers[u.phoneNumber]}");
+                          }
+
+                           */
                         },
                       ),
                     )
@@ -207,50 +224,19 @@ class _ItemDetailsViewMobileState extends State<ItemDetailsViewMobile> {
     );
   }
 
-  getUsersById(snapshot, cloudFirebaseService) async {
+  getUsersById(snapshot, cloudFirebaseService, paymentViewModel) async {
     await Future.delayed(Duration(seconds: 1));
 
     for(int i=0; i<group.groupMembers.length; i++) {
       var result = await cloudFirebaseService.getUserById(snapshot[i]);
       UserModel user = UserModel.fromMapToObject(result);
-      addUsersToList(user);
+      paymentViewModel.userList.add(user);
+      //for(var u in paymentViewModel.userList) {
+      //  print(u.userName);
+      //}
     }
 
     return 1;
-  }
-
-  dividePaymentAmongMembers(Item item, Group group, cloudFirebaseService) async {
-    double price = double.parse(item.itemPrice);
-    double priceToPayByEachMember = price/group.groupMembers.length;
-
-    for(var u in userList) {
-      itemPaymentStatus[u.phoneNumber] = priceToPayByEachMember.toString();
-    }
-    //paymentStatusBymembers.add(itemPaymentStatus);
-    //updatePaymentStatus(item, userModel, cloudFirebaseService);
-
-    //itemPaymentStatus = await cloudFirebaseService.getPaymentStatus(item);
-  }
-
-  updatePaymentStatus(Item item, UserModel userModel, cloudFirebaseService) async {
-    double price = double.parse(item.itemPrice);
-    double priceToPayByEachMember = price/group.groupMembers.length;
-
-    print("Price to pay per member $priceToPayByEachMember");
-    print("Paid amount $paidAmount");
-
-    if(paidAmount == 0) {
-      paidAmount += priceToPayByEachMember;
-    }
-
-    itemPaymentStatus.update(userModel.phoneNumber, (value) => "0");
-    await cloudFirebaseService.updateItemPaymentStatus(item, userModel, paymentStatusBymembers, priceToPayByEachMember);
-
-    //itemPaymentStatus = await cloudFirebaseService.getPaymentStatus(item);
-  }
-
-  addUsersToList(UserModel user) {
-    userList.add(user);
   }
 
   _showGroupNameForm(BuildContext context, homeViewModel) {

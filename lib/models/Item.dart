@@ -7,7 +7,7 @@ class Item{
   String itemId = "";
   String itemName = "";
   String itemPrice = "";
-  String itemPricePaid = "";
+  String itemPricePaid = "0";
   late String itemBoughtById;
   late DateTime itemBoughtAt;
   late String itemGroupId;
@@ -37,7 +37,6 @@ class Item{
     List<Item> itemList = [];
 
     for(var i in itemDataFromFirestore) {
-      print("Item name ${i["itemName"]}");
       if(i["itemBelongsToGroup"] == groupId) {
         Item item = Item.getItemDataFromDocumentSnapshotMap(i);
         itemList.add(item);

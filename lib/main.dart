@@ -11,6 +11,7 @@ import 'package:pay_split/viewmodels/AuthenticationViewModel.dart';
 import 'package:pay_split/viewmodels/DrawerModel.dart';
 import 'package:pay_split/viewmodels/GroupsListViewModel.dart';
 import 'package:pay_split/viewmodels/ItemsListViewModel.dart';
+import 'package:pay_split/viewmodels/PaymentViewModel.dart';
 import 'package:pay_split/views/HomeView.dart';
 import 'package:pay_split/views/LoginView.dart';
 import 'package:provider/provider.dart';
@@ -49,6 +50,9 @@ class _MyAppState extends State<MyApp> {
         ),
         ChangeNotifierProvider<AuthenticationViewModel>(
             create: (_) => AuthenticationViewModel()
+        ),
+        ChangeNotifierProvider<PaymentViewModel>(
+            create: (_) => PaymentViewModel()
         ),
         Provider<AuthenticationService>(
             create: (_) => AuthenticationService(FirebaseAuth.instance)

@@ -71,18 +71,23 @@ class CloudFirebaseService {
     });
   }
 
-  Future<void> updateItemPricePaidStatus(Item item, String priceToPayByEachMember) {
-    return _ref.collection("items").doc(item.itemId).set({
-      "itemBelongsToGroup": item.itemGroupId,
-      "itemBoughtAt": DateTime.now(),
-      "itemBoughtBy": item.itemBoughtById,
-      "itemName": item.itemName,
-      "itemPaymentStatusByMembers": [],
-      "itemPrice": item.itemPrice,
+  Future<void> updateItemPricePaidStatus(Item item) {
+    return _ref.collection("items").doc(item.itemId).update({
       "itemPricePaid": item.itemPricePaid
     });
   }
 
+  Future<String> getItemPricePaid(Item item) async {
+    return await _ref.collection("items").doc(item.itemId).get().then((data) {
+      if(data.exists) {
+        return data.get("itemPricePaid");
+      }
+      else {
+        return "0";
+      }
+    });
+  }
+  
   Future getUserById(String userId) async {
     return await _ref.collection("users").doc(userId).get();
   }
@@ -111,7 +116,7 @@ class CloudFirebaseService {
   }
 
 
-  updateItemPaymentStatus(Item item, UserModel userModel,  List<Map<String, String>> itemPaymentByMember, double priceToPayByEachUser) {
+  updateItemPaymentStatus(Item item, UserModel userModel,  List<Map<String, String>> itemPaymentByMember) {
     _ref.collection("items")
         .doc(item.itemId)
         .get()
@@ -122,7 +127,7 @@ class CloudFirebaseService {
       });
     });
 
-    updateItemPricePaidStatus(item, priceToPayByEachUser.toString());
+    updateItemPricePaidStatus(item);
   }
 
   Future getPaymentStatus(Item item) async {
