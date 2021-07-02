@@ -6,6 +6,7 @@ import 'package:pay_split/models/Item.dart';
 import 'package:pay_split/services/CloudFirebaseService.dart';
 import 'package:pay_split/viewmodels/GroupsListViewModel.dart';
 import 'package:pay_split/viewmodels/ItemsListViewModel.dart';
+import 'package:pay_split/viewmodels/PaymentViewModel.dart';
 import 'package:provider/provider.dart';
 
 class ItemListViewMobile extends StatefulWidget {
@@ -27,6 +28,8 @@ class _ItemListViewMobileState extends State<ItemListViewMobile> {
   Widget build(BuildContext context) {
     final itemListViewModel = Provider.of<ItemsListViewModel>(context);
     final groupViewModel = Provider.of<GroupsListViewModel>(context);
+    final paymentModel = Provider.of<PaymentViewModel>(context);
+    final cloudFirebaseService = Provider.of<CloudFirebaseService>(context);
 
     groupViewModel.currentGroup = group;
 
@@ -74,7 +77,7 @@ class _ItemListViewMobileState extends State<ItemListViewMobile> {
                         ],
                         onSelected: (value) {
                           if(value == "/addItem") {
-                            _showItemCreateForm(context, itemListViewModel);
+                            _showItemCreateForm(context, itemListViewModel, paymentModel, cloudFirebaseService);
                           }
                           else if(value == "/addMember") {
                             Navigator.pushNamed(context, memberSearchView, arguments: group);
@@ -123,7 +126,7 @@ class _ItemListViewMobileState extends State<ItemListViewMobile> {
     );
   }
 
-  _showItemCreateForm(BuildContext context, itemListViewModel) {
+  _showItemCreateForm(BuildContext context, itemListViewModel, paymentModel, cloudFirebaseService) {
     String itemNameEntered = "";
     String itemPrice = "";
 
@@ -193,6 +196,8 @@ class _ItemListViewMobileState extends State<ItemListViewMobile> {
                       onPressed: () async {
                         String itemBoughtById = context.read<CloudFirebaseService>().userModel.uid;
                         Item item = new Item(itemNameEntered, itemPrice, itemBoughtById, DateTime.now(), this.group.groupId);
+
+                        item = paymentModel.dividePaymentAmongMembers(item, group, cloudFirebaseService);
 
                         context.read<CloudFirebaseService>().addItemToFirestore(item);
                         Navigator.pop(context);

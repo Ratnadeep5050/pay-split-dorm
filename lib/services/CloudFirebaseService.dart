@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:pay_split/models/Group.dart';
 import 'package:pay_split/models/Item.dart';
 import 'package:pay_split/models/UserModel.dart';
@@ -59,16 +60,18 @@ class CloudFirebaseService {
     return _ref.collection("users").doc(userId).set(userModel.toJson());
   }
 
-  Future<void> addItemToFirestore(Item item) {
-    return _ref.collection("items").add({
+  addItemToFirestore(Item item) async {
+    await _ref.collection("items").add({
       "itemBelongsToGroup": item.itemGroupId,
       "itemBoughtAt": DateTime.now(),
       "itemBoughtBy": item.itemBoughtById,
       "itemName": item.itemName,
-      "itemPaymentStatusByMembers": [],
+      "itemPaymentStatusByMembers": item.itemPaymentStatusByMembers,
       "itemPrice": item.itemPrice,
       "itemPricePaid": item.itemPricePaid
     });
+
+    //updateItemPricePaidStatus(item);
   }
 
   Future<void> updateItemPricePaidStatus(Item item) {
@@ -84,6 +87,17 @@ class CloudFirebaseService {
       }
       else {
         return "0";
+      }
+    });
+  }
+
+  getPaymentStatusByMembers(Item item) async {
+    return await _ref.collection("items").doc(item.itemId).get().then((data) {
+      if(data.exists) {
+        return data.get("itemPaymentStatusByMembers");
+      }
+      else {
+        return {};
       }
     });
   }
@@ -116,18 +130,20 @@ class CloudFirebaseService {
   }
 
 
-  updateItemPaymentStatus(Item item, UserModel userModel,  List<Map<String, String>> itemPaymentByMember) {
+  updateItemPaymentStatus(Item item) {
     _ref.collection("items")
         .doc(item.itemId)
-        .get()
-        .then((user) {
-          print(itemPaymentByMember);
-      _ref.collection("items").doc(item.itemId).update({
-        "itemPaymentStatusByList": itemPaymentByMember
-      });
-    });
+        .set(item.itemPaymentStatusByMembers);
 
     updateItemPricePaidStatus(item);
+  }
+
+  updatePaymentStatusByMember(UserModel userModel, Item item) async {
+    await _ref.collection("items").doc(item.itemId).update(
+      {
+        "itemPaymentStatusByMembers.${userModel.phoneNumber}": "0"
+      }
+    );
   }
 
   Future getPaymentStatus(Item item) async {
