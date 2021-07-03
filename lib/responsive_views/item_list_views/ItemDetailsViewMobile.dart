@@ -126,67 +126,40 @@ class _ItemDetailsViewMobileState extends State<ItemDetailsViewMobile> {
   Widget _getMemberCard(int index, cloudFirebaseService, paymentViewModel) {
     UserModel user = paymentViewModel.userList[index];
 
-    return FutureBuilder(
-      future: cloudFirebaseService.getPaymentStatusByMembers(item),
-      builder: (BuildContext context, AsyncSnapshot snapshot) {
-        if(snapshot.hasData) {
-          paymentViewModel.itemModel.itemPaymentStatusByMembers[user.phoneNumber] = snapshot.data[user.phoneNumber];
-          return Container(
-              padding: EdgeInsets.all(5),
-              child: Card(
-                  elevation: 3,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            margin: EdgeInsets.fromLTRB(5, 5, 5, 2),
-                            padding: EdgeInsets.all(2),
-                            child: Text(
-                              user.username,
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20
-                              ),
-                            ),
-                          ),
-                          Container(
-                            margin: EdgeInsets.fromLTRB(5, 2, 5, 5),
-                            padding: EdgeInsets.all(2),
-                            child: Text(
-                              user.phoneNumber,
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 12,
-                                  fontStyle: FontStyle.italic,
-                                  color: Colors.black54
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
-                      Column(
-                        children: [
-                          Container(
-                            margin: EdgeInsets.fromLTRB(5, 2, 5, 5),
-                            child: Text(
-                              snapshot.data[user.phoneNumber],
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 12,
-                                  fontStyle: FontStyle.italic,
-                                  color: Colors.black54
-                              ),
-                            ),
-                          ),
-                          cloudFirebaseService.activeUser.phoneNumber == user.phoneNumber ? Container(
-                            margin: EdgeInsets.fromLTRB(5, 2, 5, 5),
-                            child: TextButton(
+    if(item.itemBoughtById != user.uid) {
+      return FutureBuilder(
+        future: cloudFirebaseService.getPaymentStatusByMembers(item),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          if(snapshot.hasData) {
+            print(snapshot.data[user.phoneNumber]);
+            paymentViewModel.itemModel.itemPaymentStatusByMembers[user.phoneNumber] = snapshot.data[user.phoneNumber];
+            return Container(
+                padding: EdgeInsets.all(5),
+                child: Card(
+                    elevation: 3,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              margin: EdgeInsets.fromLTRB(5, 5, 5, 2),
+                              padding: EdgeInsets.all(2),
                               child: Text(
-                                "Pay",
+                                user.username,
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20
+                                ),
+                              ),
+                            ),
+                            Container(
+                              margin: EdgeInsets.fromLTRB(5, 2, 5, 5),
+                              padding: EdgeInsets.all(2),
+                              child: Text(
+                                user.phoneNumber,
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 12,
@@ -194,49 +167,82 @@ class _ItemDetailsViewMobileState extends State<ItemDetailsViewMobile> {
                                     color: Colors.black54
                                 ),
                               ),
-                              onPressed: () async {
-                                /*
+                            )
+                          ],
+                        ),
+                        Column(
+                          children: [
+                            Container(
+                              margin: EdgeInsets.fromLTRB(5, 2, 5, 5),
+                              child: Text(
+                                snapshot.data[user.phoneNumber],
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 12,
+                                    fontStyle: FontStyle.italic,
+                                    color: Colors.black54
+                                ),
+                              ),
+                            ),
+                            cloudFirebaseService.activeUser.phoneNumber == user.phoneNumber ? Container(
+                              margin: EdgeInsets.fromLTRB(5, 2, 5, 5),
+                              child: TextButton(
+                                child: Text(
+                                  "Pay",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 12,
+                                      fontStyle: FontStyle.italic,
+                                      color: Colors.black54
+                                  ),
+                                ),
+                                onPressed: () async {
+                                  /*
                           for(var u in paymentViewModel.userList) {
                             print("Before payment ${u.phoneNumber} => ${paymentViewModel.itemModel.itemPaymentStatusByMembers[u.phoneNumber]}");
                           }
 
                            */
-                                if(snapshot.data[user.phoneNumber] != "0") {
-                                  await paymentViewModel.updatePaymentStatus(item, user, snapshot.data[user.phoneNumber], cloudFirebaseService);
-                                  await paymentViewModel.updatePaymentByMember(user, item, cloudFirebaseService);
-                                  paymentViewModel.itemModel.itemPaymentStatusByMembers[user.phoneNumber] = "0";
-                                  //print("After pay ${paymentViewModel.itemModel.itemPaymentStatusByMembers[user.phoneNumber]}");
-                                }
-                                setState(() {
+                                  if(snapshot.data[user.phoneNumber] != "0") {
+                                    await paymentViewModel.updatePaymentStatus(item, user, snapshot.data[user.phoneNumber], cloudFirebaseService);
+                                    await paymentViewModel.updatePaymentByMember(user, item, cloudFirebaseService);
+                                    paymentViewModel.itemModel.itemPaymentStatusByMembers[user.phoneNumber] = "0";
+                                    //print("After pay ${paymentViewModel.itemModel.itemPaymentStatusByMembers[user.phoneNumber]}");
+                                  }
+                                  setState(() {
 
-                                });
-                                /*
+                                  });
+                                  /*
                           for(var u in paymentViewModel.userList) {
                             print("After payment ${u.phoneNumber} => ${paymentViewModel.itemModel.itemPaymentStatusByMembers[u.phoneNumber]}");
                           }
 
                            */
-                              },
+                                },
+                              ),
+                            )
+                                :
+                            Container(
+                              color: Colors.black,
                             ),
-                          )
-                              :
-                          Container(
-                            color: Colors.black,
-                          ),
-                        ],
-                      ),
-                    ],
-                  )
-              )
-          );
-        }
-        else {
-          return Center(
-            child: CircularProgressIndicator(),
-          );
-        }
-      },
-    );
+                          ],
+                        ),
+                      ],
+                    )
+                )
+            );
+          }
+          else {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+        },
+      );
+    }
+    else {
+      return Container();
+    }
   }
 
   getUsersById(snapshot, cloudFirebaseService, paymentViewModel) async {

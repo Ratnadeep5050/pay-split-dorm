@@ -12,6 +12,7 @@ class PaymentViewModel with ChangeNotifier{
 
   Item dividePaymentAmongMembers(Item item, Group group, cloudFirebaseService) {
     itemModel = item;
+    getUserOfGroup(group, cloudFirebaseService);
     double price = double.parse(itemModel.itemPrice);
     double priceToPayByEachMember = price/group.groupMembers.length;
 
@@ -21,6 +22,12 @@ class PaymentViewModel with ChangeNotifier{
 
     return itemModel;
     updatePaymentStatusByMembersInCloudDB(item, cloudFirebaseService);
+  }
+
+  getUserOfGroup(Group group, cloudFirebaseService) async {
+    await cloudFirebaseService.getUserListOfGroup(group).then((data) {
+      print(data.phoneNumber);
+    });
   }
 
   updatePaymentStatus(Item item, UserModel userModel, String priceToPay, cloudFirebaseService) async {

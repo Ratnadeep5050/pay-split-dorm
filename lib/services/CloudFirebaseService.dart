@@ -24,16 +24,34 @@ class CloudFirebaseService {
     );
   }
 
+  getUserListOfGroup(Group group) async {
+    return await _ref.collection("group").doc(group.groupId).get();
+        /*
+        .then((data) {
+      if(data.exists) {
+        print("exist");
+        print(data.get("groupMembers"));
+        return data.get("groupMembers");
+      }
+      else{
+        print("exist");
+        return [];
+      }
+    });
+
+         */
+  }
+
   Future<void> addUserDataToFireStore(UserModel userModel, String userId) {
     return _ref.collection("users").doc(userId).set(userModel.toJson());
   }
 
-  addGroupToFirestore(Group group) {
-    _ref.collection("groups").add({
+  addGroupToFirestore(Group group) async {
+    await _ref.collection("groups").add({
       "admin": userModel.uid,
       "groupCreatedAt": DateTime.now(),
       "groupCreatedBy": userModel.uid,
-      "groupMembers": [],
+      "groupMembers": FieldValue.arrayUnion([userModel.uid]),
       "groupName": group.groupName,
     });
 
@@ -111,7 +129,7 @@ class CloudFirebaseService {
   }
 
   addMemberToSpecificGroup(String groupId, UserModel user) async {
-    _ref.collection("groups").doc(groupId).update({
+    await _ref.collection("groups").doc(groupId).update({
       "groupMembers": FieldValue.arrayUnion([user.uid]),
     });
 
