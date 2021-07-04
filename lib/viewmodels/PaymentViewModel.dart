@@ -11,13 +11,21 @@ class PaymentViewModel with ChangeNotifier{
   Item itemModel = Item.makeObject();
 
   Item dividePaymentAmongMembers(Item item, Group group, cloudFirebaseService) {
+    for(var u in userList) {
+      print(u);
+    }
     itemModel = item;
     getUserOfGroup(group, cloudFirebaseService);
     double price = double.parse(itemModel.itemPrice);
-    double priceToPayByEachMember = price/group.groupMembers.length;
+    double priceToPayByEachMember = price/(group.groupMembers.length-1);
 
     for(var u in userList) {
-      itemModel.itemPaymentStatusByMembers[u.phoneNumber] = priceToPayByEachMember.toString();
+      if(u.uid == itemModel.itemBoughtById) {
+        itemModel.itemPaymentStatusByMembers[u.phoneNumber] = "0";
+      }
+      else {
+        itemModel.itemPaymentStatusByMembers[u.phoneNumber] = priceToPayByEachMember.toString();
+      }
     }
 
     return itemModel;
@@ -26,7 +34,7 @@ class PaymentViewModel with ChangeNotifier{
 
   getUserOfGroup(Group group, cloudFirebaseService) async {
     await cloudFirebaseService.getUserListOfGroup(group).then((data) {
-      print(data.phoneNumber);
+
     });
   }
 
