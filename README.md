@@ -1,2 +1,2 @@
 # pay-split-dorm
-A multipurpose payment splitting mobile application
+A multipurpose payment splitting flutter application
