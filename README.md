@@ -1,6 +1,6 @@
 # pay_split
 
-A multipurpose payment splitting app.
+A multipurpose payment splitting flutter app.
 
 ## Getting Started
 
